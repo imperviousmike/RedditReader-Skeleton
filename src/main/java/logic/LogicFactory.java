@@ -16,7 +16,7 @@ public class LogicFactory {
     public static <T extends DataAccessLayer<T>> T getFor(String entityName) {
 
         try {
-            return getFor((Class< T>) Class.forName(PACKAGE + entityName + SUFFIX));
+            return getFor((Class< T>) Class.forName(PACKAGE + "." + entityName + SUFFIX));
         } catch (ClassNotFoundException e) {
             return null;
         }
