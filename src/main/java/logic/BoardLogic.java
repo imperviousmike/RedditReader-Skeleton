@@ -94,7 +94,7 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         //converted to appropriate type. have in mind that values are
         //stored in an array of String; almost always the value is at
         //index zero unless you have used duplicated key/name somewhere.
-        String url= parameterMap.get(URL)[0];
+        String url = parameterMap.get(URL)[0];
         String name = parameterMap.get(NAME)[0];
         String hostId = parameterMap.get(HOST_ID)[0];
 
@@ -113,9 +113,11 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
 
     /**
      * this method is used to send a list of all names to be used form table
-     * column headers. by having all names in one location there is less chance of mistakes.
+     * column headers. by having all names in one location there is less chance
+     * of mistakes.
      *
-     * this list must be in the same order as getColumnCodes and extractDataAsList
+     * this list must be in the same order as getColumnCodes and
+     * extractDataAsList
      *
      * @return list of all column names to be displayed.
      */
@@ -126,9 +128,11 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
 
     /**
      * this method returns a list of column names that match the official column
-     * names in the db. by having all names in one location there is less chance of mistakes.
+     * names in the db. by having all names in one location there is less chance
+     * of mistakes.
      *
-     * this list must be in the same order as getColumnNames and extractDataAsList
+     * this list must be in the same order as getColumnNames and
+     * extractDataAsList
      *
      * @return list of all column names in DB.
      */
@@ -149,6 +153,10 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     @Override
     public List<?> extractDataAsList(Board e) {
         return Arrays.asList(e.getId(), e.getUrl(), e.getName(), e.getHostid());
+    }
+
+    public Board getBoardWithUrl(String url) {
+        return get(() -> dal().findByUrl(url));
     }
 
 }
