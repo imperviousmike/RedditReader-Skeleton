@@ -32,10 +32,10 @@ public class BoardDAL extends GenericDAL<Board> {
         return findResult("Board.findById", map);
     }
 
-    public Board findByHostid(int hostId) {
+    public List<Board> findByHostid(int hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("hostid", hostId);
-        return findResult("Board.findByHostid", map);
+        return findResults("Board.findByHostid", map);
     }
 
     public Board findByUrl(String url) {
@@ -44,10 +44,10 @@ public class BoardDAL extends GenericDAL<Board> {
         return findResult("Board.findByUrl", map);
     }
 
-    public Board findByName(String name) {
+    public List<Board> findByName(String name) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
-        return findResult("Board.findByName", map);
+        return findResults("Board.findByName", map);
     }
 
 }
