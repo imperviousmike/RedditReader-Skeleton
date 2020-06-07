@@ -20,8 +20,8 @@ import java.util.function.ObjIntConsumer;
  * @author Earl_Grey_Hot
  */
 public class BoardLogic extends GenericLogic<Board, BoardDAL> {
-    
-        /**
+
+    /**
      * create static final variables with proper name of each column. this way
      * you will never manually type it again, instead always refer to these
      * variables.
@@ -49,7 +49,7 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     }
 
     public List<Board> getBoardsWithHostID(int hostid) {
-        return get(() -> dal().findByHostId(hostid));
+        return get(() -> dal().findByHostid(hostid));
     }
 
     public List<Board> getBoardsWithName(String name) {
