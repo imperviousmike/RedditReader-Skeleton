@@ -96,12 +96,11 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         //index zero unless you have used duplicated key/name somewhere.
         String url = parameterMap.get(URL)[0];
         String name = parameterMap.get(NAME)[0];
-        String hostId = parameterMap.get(HOST_ID)[0];
+        Integer hostId = Integer.parseInt(parameterMap.get(HOST_ID)[0]);
 
         //validate the data
-        validator.accept(url, 45);
-        validator.accept(name, 45);
-        validator.accept(hostId, 45);
+        validator.accept(url, 255);
+        validator.accept(name, 100);
 
         //set values on entity
         entity.setUrl(url);
