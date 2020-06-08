@@ -102,6 +102,7 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         validator.accept(url, 255);
         validator.accept(name, 100);
 
+        //TODO: Should we add validation to confirm if the URL is a valid URL?
         HostLogic hLogic = LogicFactory.getFor("Host");
         Host host = hLogic.getWithId(hostId);
 
