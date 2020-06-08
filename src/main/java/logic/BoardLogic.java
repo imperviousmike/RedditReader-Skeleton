@@ -102,10 +102,17 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         validator.accept(url, 255);
         validator.accept(name, 100);
 
+        HostLogic hLogic = LogicFactory.getFor("Host");
+        Host host = hLogic.getWithId(hostId);
+
+        if (host == null) {
+            throw new ValidationException("Cannot find Host from given ID");
+        }
+
         //set values on entity
         entity.setUrl(url);
         entity.setName(name);
-        entity.setHostid(new Host(Integer.parseInt(hostId)));
+        entity.setHostid(host);
 
         return entity;
     }
