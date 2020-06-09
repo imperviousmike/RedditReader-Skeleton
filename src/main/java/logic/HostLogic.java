@@ -47,7 +47,7 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         return get(() -> dal().findById(id));
     }
 
-    public Host getHosttWithNickname(String name) {
+    public Host getHosttWithName(String name) {
         return get(() -> dal().findByName(name));
     }
 
