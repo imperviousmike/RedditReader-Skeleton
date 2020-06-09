@@ -55,6 +55,10 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     public List<Board> getBoardsWithName(String name) {
         return get(() -> dal().findByName(name));
     }
+    
+    public Board getBoardWithUrl(String url) {
+        return get(() -> dal().findByUrl(url));
+    }
 
     @Override
     public Board createEntity(Map<String, String[]> parameterMap) {
@@ -166,9 +170,5 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     public List<?> extractDataAsList(Board e) {
         return Arrays.asList(e.getId(), e.getUrl(), e.getName(), e.getHostid());
     }
-
-    public Board getBoardWithUrl(String url) {
-        return get(() -> dal().findByUrl(url));
-    }
-
+    
 }
