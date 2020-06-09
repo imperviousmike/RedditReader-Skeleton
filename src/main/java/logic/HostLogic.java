@@ -102,8 +102,8 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         String url = parameterMap.get(URL)[0];
         String extractionType = parameterMap.get(EXTRACTION_TYPE)[0];
 
-        if (!extractionType.equals("json") || !extractionType.equals("html") || !extractionType.equals("xml")) {
-            throw new ValidationException("extraction type MUST be one of the following: json,html.xml");
+        if (!extractionType.equals("json") && !extractionType.equals("html") && !extractionType.equals("xml")) {
+            throw new ValidationException("extraction type MUST be one of the following: json|html|xml");
         }
 
         //validate the data
