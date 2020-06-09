@@ -7,6 +7,7 @@ package logic;
 
 import common.ValidationException;
 import dal.HostDAL;
+import entity.Board;
 import entity.Host;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         return get(() -> dal().findById(id));
     }
 
-    public Host getHosttWithName(String name) {
+    public Host getHostWithName(String name) {
         return get(() -> dal().findByName(name));
     }
 
