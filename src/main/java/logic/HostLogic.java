@@ -7,6 +7,7 @@ package logic;
 
 import common.ValidationException;
 import dal.HostDAL;
+import entity.Board;
 import entity.Host;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         return get(() -> dal().findById(id));
     }
 
-    public Host getHosttWithNickname(String name) {
+    public Host getHostWithName(String name) {
         return get(() -> dal().findByName(name));
     }
 
@@ -100,6 +101,10 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         String name = parameterMap.get(NAME)[0];
         String url = parameterMap.get(URL)[0];
         String extractionType = parameterMap.get(EXTRACTION_TYPE)[0];
+
+        if (!extractionType.equals("json") && !extractionType.equals("html") && !extractionType.equals("xml")) {
+            throw new ValidationException("extraction type MUST be one of the following: json|html|xml");
+        }
 
         //validate the data
         validator.accept(name, 100);
