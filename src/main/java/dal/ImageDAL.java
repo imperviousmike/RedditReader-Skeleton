@@ -33,16 +33,16 @@ public class ImageDAL extends GenericDAL<Image> {
         return findResult("Image.findById", map);
     }
 
-    public Image findByBoardId(int boardId) {
+    public List<Image> findByBoardId(int boardId) {
         Map<String, Object> map = new HashMap<>();
         map.put("Board_id", boardId);
-        return findResult("Image.findByBoardId", map);
+        return findResults("Image.findByBoardId", map);
     }
 
-    public Image findByTitle(String title) {
+    public List<Image> findByTitle(String title) {
         Map<String, Object> map = new HashMap<>();
         map.put("title", title);
-        return findResult("Image.findByTitle", map);
+        return findResults("Image.findByTitle", map);
     }
 
     public Image findByUrl(String url) {
@@ -51,10 +51,10 @@ public class ImageDAL extends GenericDAL<Image> {
         return findResult("Image.findByUrl", map);
     }
 
-    public Image findByDate(Date date) {
+    public List<Image> findByDate(Date date) {
         Map<String, Object> map = new HashMap<>();
         map.put("date", date);
-        return findResult("Image.findByDate", map);
+        return findResults("Image.findByDate", map);
     }
 
     public Image findByLocalPath(String localPath) {
