@@ -96,17 +96,29 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         //index zero unless you have used duplicated key/name somewhere.
         String url = parameterMap.get(URL)[0];
         String name = parameterMap.get(NAME)[0];
-        String hostId = parameterMap.get(HOST_ID)[0];
+        Integer hostId;
+        try {
+            hostId = Integer.parseInt(parameterMap.get(HOST_ID)[0]);
+        } catch (java.lang.NumberFormatException ex) {
+            throw new ValidationException(ex);
+        }
 
         //validate the data
-        validator.accept(url, 45);
-        validator.accept(name, 45);
-        validator.accept(hostId, 45);
+        validator.accept(url, 255);
+        validator.accept(name, 100);
+
+        //TODO: Should we add validation to confirm if the URL is a valid URL?
+        HostLogic hLogic = LogicFactory.getFor("Host");
+        Host host = hLogic.getWithId(hostId);
+
+        if (host == null) {
+            throw new ValidationException("Cannot find Host from given ID");
+        }
 
         //set values on entity
         entity.setUrl(url);
         entity.setName(name);
-        entity.setHostid(new Host(Integer.parseInt(hostId)));
+        entity.setHostid(host);
 
         return entity;
     }
