@@ -6,22 +6,16 @@
 package logic;
 
 import common.ValidationException;
+import common.ValidationUtil;
 import dal.ImageDAL;
 import entity.Board;
-import entity.Host;
 import entity.Image;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.ObjIntConsumer;
-import static logic.BoardLogic.HOST_ID;
-import static logic.BoardLogic.ID;
-import static logic.BoardLogic.NAME;
-import static logic.BoardLogic.URL;
 
 /**
  *
@@ -78,69 +72,84 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
 
     @Override
     public Image createEntity(Map<String, String[]> parameterMap) {
-
-        //do not create any logic classes in this method.
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
-        //same as if condition below
-//        if (parameterMap == null) {
-//            throw new NullPointerException("parameterMap cannot be null");
-//        }
-
-        //create a new Entity object
         Image entity = new Image();
-
-        //ID is generated, so if it exists add it to the entity object
-        //otherwise it does not matter as mysql will create an if for it.
-        //the only time that we will have id is for update behaviour.
-        if (parameterMap.containsKey(ID)) {
+        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
             try {
-                entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
-            } catch (java.lang.NumberFormatException ex) {
+                switch (map.getKey()) {
+                    case ID:
+                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+                        break;
+                    case URL:
+                        String url = parameterMap.get(URL)[0];
+                        ValidationUtil.validateString(url, 255);
+                        entity.setUrl(URL);
+                        break;
+                    case TITLE:
+                        String title = parameterMap.get(TITLE)[0];
+                        ValidationUtil.validateString(title, 1000);
+                        entity.setTitle(title);
+                        break;
+                    case DATE:
+                        entity.setDate(FORMATTER.parse(parameterMap.get(DATE)[0]));
+                        break;
+                    case LOCAL_PATH:
+                        String path = parameterMap.get(LOCAL_PATH)[0];
+                        ValidationUtil.validateString(path, 255);
+                        entity.setLocalPath(path);
+                        break;
+                    case BOARD_ID:
+                        entity.setBoard(new Board(Integer.parseInt(parameterMap.get(BOARD_ID)[0])));
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
                 throw new ValidationException(ex);
             }
         }
-
-        //before using the values in the map, make sure to do error checking.
-        //simple lambda to validate a string, this can also be place in another
-        //method to be shared amoung all logic classes.
-        ObjIntConsumer< String> validator = (value, length) -> {
-            if (value == null || value.trim().isEmpty() || value.length() > length) {
-                throw new ValidationException("value cannot be null, empty or larger than " + length + " characters");
-            }
-        };
-
-        //extract the date from map first.
-        //everything in the parameterMap is string so it must first be
-        //converted to appropriate type. have in mind that values are
-        //stored in an array of String; almost always the value is at
-        //index zero unless you have used duplicated key/name somewhere.
-        String date = parameterMap.get(DATE)[0];
-        String url = parameterMap.get(URL)[0];
-        String title = parameterMap.get(TITLE)[0];
-        String localPath = parameterMap.get(LOCAL_PATH)[0];
-        
-        Date extractedDate;
-        try {
-            extractedDate = FORMATTER.parse(date);
-        } catch (ParseException ex) {
-            throw new ValidationException(ex);
-        }
-        
-        //validate the data
-        validator.accept(url, 255);
-        validator.accept(title, 1000);
-        validator.accept(localPath, 255);
-        
-        //set values on entity
-        entity.setUrl(url);
-        entity.setTitle(title);
-        entity.setDate(extractedDate);
 
         return entity;
     }
 
     public Image updateEntity(Map<String, String[]> parameterMap) {
-        
+        Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
+        Image entity = getWithId(Integer.parseInt(parameterMap.get(ID)[0]));
+        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
+            try {
+                switch (map.getKey()) {
+                    case ID:
+                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+                        break;
+                    case URL:
+                        String url = parameterMap.get(URL)[0];
+                        ValidationUtil.validateString(url, 255);
+                        entity.setUrl(URL);
+                        break;
+                    case TITLE:
+                        String title = parameterMap.get(TITLE)[0];
+                        ValidationUtil.validateString(title, 1000);
+                        entity.setTitle(title);
+                        break;
+                    case DATE:
+                        entity.setDate(FORMATTER.parse(parameterMap.get(DATE)[0]));
+                        break;
+                    case LOCAL_PATH:
+                        String path = parameterMap.get(LOCAL_PATH)[0];
+                        ValidationUtil.validateString(path, 255);
+                        entity.setLocalPath(path);
+                        break;
+                    case BOARD_ID:
+                        entity.setBoard(new Board(Integer.parseInt(parameterMap.get(BOARD_ID)[0])));
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
+                throw new ValidationException(ex);
+            }
+        }
+        return entity;
     }
 
     @Override
