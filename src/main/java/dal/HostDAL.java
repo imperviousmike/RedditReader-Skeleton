@@ -46,8 +46,8 @@ public class HostDAL extends GenericDAL<Host> {
 
     public List<Host> findByExtractionType(String type) {
         Map<String, Object> map = new HashMap<>();
-        map.put("extraction_type", type);
-        return findResults("Host.findByExtractionType", null);
+        map.put("extractionType", type);
+        return findResults("Host.findByExtractionType", map);
     }
 
 }

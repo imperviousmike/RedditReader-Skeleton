@@ -6,7 +6,9 @@
 package logic;
 
 import common.ValidationException;
+import common.ValidationUtil;
 import dal.HostDAL;
+import entity.Board;
 import entity.Host;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +49,7 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         return get(() -> dal().findById(id));
     }
 
-    public Host getHosttWithNickname(String name) {
+    public Host getHostWithName(String name) {
         return get(() -> dal().findByName(name));
     }
 
@@ -61,55 +63,37 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
 
     @Override
     public Host createEntity(Map<String, String[]> parameterMap) {
-        //do not create any logic classes in this method.
-
+        
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
-        //same as if condition below
-//        if (parameterMap == null) {
-//            throw new NullPointerException("parameterMap cannot be null");
-//        }
-
-        //create a new Entity object
         Host entity = new Host();
-
-        //ID is generated, so if it exists add it to the entity object
-        //otherwise it does not matter as mysql will create an if for it.
-        //the only time that we will have id is for update behaviour.
-        if (parameterMap.containsKey(ID)) {
+        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
             try {
-                entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
-            } catch (java.lang.NumberFormatException ex) {
+                switch (map.getKey()) {
+                    case URL:
+                        String url = parameterMap.get(URL)[0];
+                        ValidationUtil.validateString(url, 255);
+                        entity.setUrl(url);
+                        break;
+                    case NAME:
+                        String name = parameterMap.get(NAME)[0];
+                        ValidationUtil.validateString(name, 100);
+                        entity.setName(name);
+                        break;
+                    case ID:
+                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+                        break;
+                    case EXTRACTION_TYPE:
+                        String extractionType = parameterMap.get(EXTRACTION_TYPE)[0];
+                        ValidationUtil.validateExtractionType(extractionType);
+                        entity.setExtractionType(extractionType);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
                 throw new ValidationException(ex);
             }
         }
-
-        //before using the values in the map, make sure to do error checking.
-        //simple lambda to validate a string, this can also be place in another
-        //method to be shared amoung all logic classes.
-        ObjIntConsumer< String> validator = (value, length) -> {
-            if (value == null || value.trim().isEmpty() || value.length() > length) {
-                throw new ValidationException("value cannot be null, empty or larger than " + length + " characters");
-            }
-        };
-
-        //extract the date from map first.
-        //everything in the parameterMap is string so it must first be
-        //converted to appropriate type. have in mind that values are
-        //stored in an array of String; almost always the value is at
-        //index zero unless you have used duplicated key/name somewhere.
-        String name = parameterMap.get(NAME)[0];
-        String url = parameterMap.get(URL)[0];
-        String extractionType = parameterMap.get(EXTRACTION_TYPE)[0];
-
-        //validate the data
-        validator.accept(name, 100);
-        validator.accept(url, 255);
-        validator.accept(extractionType, 45);
-
-        //set values on entity
-        entity.setName(name);
-        entity.setUrl(url);
-        entity.setExtractionType(extractionType);
 
         return entity;
     }

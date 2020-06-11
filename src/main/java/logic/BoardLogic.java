@@ -6,10 +6,12 @@
 package logic;
 
 import common.ValidationException;
+import common.ValidationUtil;
 import dal.BoardDAL;
 import entity.Board;
 import entity.Host;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,69 +58,42 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
         return get(() -> dal().findByName(name));
     }
 
+    public Board getBoardWithUrl(String url) {
+        return get(() -> dal().findByUrl(url));
+    }
+
     @Override
     public Board createEntity(Map<String, String[]> parameterMap) {
-        //do not create any logic classes in this method.
-
+        
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
-        //same as if condition below
-//        if (parameterMap == null) {
-//            throw new NullPointerException("parameterMap cannot be null");
-//        }
-
-        //create a new Entity object
         Board entity = new Board();
 
-        //ID is generated, so if it exists add it to the entity object
-        //otherwise it does not matter as mysql will create an if for it.
-        //the only time that we will have id is for update behaviour.
-        if (parameterMap.containsKey(ID)) {
+        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
             try {
-                entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
-            } catch (java.lang.NumberFormatException ex) {
+                switch (map.getKey()) {
+                    case URL:
+                        String url = parameterMap.get(URL)[0];
+                        ValidationUtil.validateString(url, 255);
+                        entity.setUrl(url);
+                        break;
+                    case NAME:
+                        String name = parameterMap.get(NAME)[0];
+                        ValidationUtil.validateString(name, 100);
+                        entity.setName(name);
+                        break;
+                    case ID:
+                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+                        break;
+                    case HOST_ID:
+                        entity.setHostid(new Host(Integer.parseInt(parameterMap.get(HOST_ID)[0])));
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
                 throw new ValidationException(ex);
             }
         }
-
-        //before using the values in the map, make sure to do error checking.
-        //simple lambda to validate a string, this can also be place in another
-        //method to be shared amoung all logic classes.
-        ObjIntConsumer< String> validator = (value, length) -> {
-            if (value == null || value.trim().isEmpty() || value.length() > length) {
-                throw new ValidationException("value cannot be null, empty or larger than " + length + " characters");
-            }
-        };
-
-        //extract the date from map first.
-        //everything in the parameterMap is string so it must first be
-        //converted to appropriate type. have in mind that values are
-        //stored in an array of String; almost always the value is at
-        //index zero unless you have used duplicated key/name somewhere.
-        String url = parameterMap.get(URL)[0];
-        String name = parameterMap.get(NAME)[0];
-        Integer hostId;
-        try {
-            hostId = Integer.parseInt(parameterMap.get(HOST_ID)[0]);
-        } catch (java.lang.NumberFormatException ex) {
-            throw new ValidationException(ex);
-        }
-
-        //validate the data
-        validator.accept(url, 255);
-        validator.accept(name, 100);
-
-        //TODO: Should we add validation to confirm if the URL is a valid URL?
-        HostLogic hLogic = LogicFactory.getFor("Host");
-        Host host = hLogic.getWithId(hostId);
-
-        if (host == null) {
-            throw new ValidationException("Cannot find Host from given ID");
-        }
-
-        //set values on entity
-        entity.setUrl(url);
-        entity.setName(name);
-        entity.setHostid(host);
 
         return entity;
     }
@@ -165,10 +140,6 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     @Override
     public List<?> extractDataAsList(Board e) {
         return Arrays.asList(e.getId(), e.getUrl(), e.getName(), e.getHostid());
-    }
-
-    public Board getBoardWithUrl(String url) {
-        return get(() -> dal().findByUrl(url));
     }
 
 }

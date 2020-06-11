@@ -1,6 +1,7 @@
 package logic;
 
 import common.ValidationException;
+import common.ValidationUtil;
 import dal.AccountDAL;
 import entity.Account;
 import java.util.Arrays;
@@ -65,64 +66,46 @@ public class AccountLogic extends GenericLogic<Account, AccountDAL> {
 
     @Override
     public Account createEntity(Map<String, String[]> parameterMap) {
-        //do not create any logic classes in this method.
-
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
-        //same as if condition below
-//        if (parameterMap == null) {
-//            throw new NullPointerException("parameterMap cannot be null");
-//        }
-
-        //create a new Entity object
         Account entity = new Account();
-
-        //ID is generated, so if it exists add it to the entity object
-        //otherwise it does not matter as mysql will create an if for it.
-        //the only time that we will have id is for update behaviour.
-        if (parameterMap.containsKey(ID)) {
+        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
             try {
-                entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
-            } catch (java.lang.NumberFormatException ex) {
+                switch (map.getKey()) {
+                    case USERNAME:
+                        String userName = parameterMap.get(USERNAME)[0];
+                        ValidationUtil.validateString(userName, 45);
+                        entity.setUsername(userName);
+                        break;
+                    case NICKNAME:
+                        String name = parameterMap.get(NICKNAME)[0];
+                        ValidationUtil.validateString(name, 45);
+                        entity.setNickname(name);
+                        break;
+                    case ID:
+                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
+                        break;
+                    case PASSWORD:
+                        String password = parameterMap.get(PASSWORD)[0];
+                        ValidationUtil.validateString(password, 45);
+                        entity.setPassword(password);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
                 throw new ValidationException(ex);
             }
         }
-
-        //before using the values in the map, make sure to do error checking.
-        //simple lambda to validate a string, this can also be place in another
-        //method to be shared amoung all logic classes.
-        ObjIntConsumer< String> validator = (value, length) -> {
-            if (value == null || value.trim().isEmpty() || value.length() > length) {
-                throw new ValidationException("value cannot be null, empty or larger than " + length + " characters");
-            }
-        };
-
-        //extract the date from map first.
-        //everything in the parameterMap is string so it must first be
-        //converted to appropriate type. have in mind that values are
-        //stored in an array of String; almost always the value is at
-        //index zero unless you have used duplicated key/name somewhere.
-        String nickname = parameterMap.get(NICKNAME)[0];
-        String username = parameterMap.get(USERNAME)[0];
-        String password = parameterMap.get(PASSWORD)[0];
-
-        //validate the data
-        validator.accept(nickname, 45);
-        validator.accept(username, 45);
-        validator.accept(password, 45);
-
-        //set values on entity
-        entity.setNickname(nickname);
-        entity.setUsername(username);
-        entity.setPassword(password);
-
         return entity;
     }
 
     /**
      * this method is used to send a list of all names to be used form table
-     * column headers. by having all names in one location there is less chance of mistakes.
+     * column headers. by having all names in one location there is less chance
+     * of mistakes.
      *
-     * this list must be in the same order as getColumnCodes and extractDataAsList
+     * this list must be in the same order as getColumnCodes and
+     * extractDataAsList
      *
      * @return list of all column names to be displayed.
      */
@@ -133,9 +116,11 @@ public class AccountLogic extends GenericLogic<Account, AccountDAL> {
 
     /**
      * this method returns a list of column names that match the official column
-     * names in the db. by having all names in one location there is less chance of mistakes.
+     * names in the db. by having all names in one location there is less chance
+     * of mistakes.
      *
-     * this list must be in the same order as getColumnNames and extractDataAsList
+     * this list must be in the same order as getColumnNames and
+     * extractDataAsList
      *
      * @return list of all column names in DB.
      */
