@@ -25,15 +25,15 @@ public class Reddit {
      * you need to initialize the next three variables based on the given
      * instructions in prelab
      */
-    private static final String CLIENT_ID = "";
-    private static final String CLIENT_SECRET = "";
-    private static final String REDDIT_USER = "";
+    private static final String CLIENT_ID = "lSZE0VyrvT4VLw";;
+    private static final String CLIENT_SECRET = "hbdvN_tnR-PwfRe6_rnTujKO15I";
+    private static final String REDDIT_USER = "daly0100";
 
     /**
      * replace yourname with your name in the text below, no spaces and
      * lowercase
      */
-    private static final String APPID = "com.algonquin.cst8288.s20.yourname";
+    private static final String APPID = "com.algonquin.cst8288.s20.michaeldaly";
 
     private static final String PLATFORM = "RedditReaderWebBot";
     private static final String VERSION = "v0.1";
