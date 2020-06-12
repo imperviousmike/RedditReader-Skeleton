@@ -32,20 +32,20 @@ import org.junit.jupiter.api.Test;
  * @author Earl_Grey_Hot
  */
 public class BoardLogicTest {
-
+    
     private BoardLogic logic;
     private Board expectedBoard;
-
+    
     @BeforeAll
     final static void setUpBeforeClass() throws Exception {
         TomcatStartUp.createTomcat("/RedditReader", "common.ServletListener");
     }
-
+    
     @AfterAll
     final static void tearDownAfterClass() throws Exception {
         TomcatStartUp.stopAndDestroyTomcat();
     }
-
+    
     @BeforeEach
     final void setUp() throws Exception {
         /* **********************************
@@ -55,13 +55,10 @@ public class BoardLogicTest {
         //always create Entity using logic.
         //we manually make the account to not rely on any logic functionality , just for testing
 
-        HostLogic hLogic = LogicFactory.getFor("Host");
-        Host testHost = hLogic.getWithId(1);
-        
         Board board = new Board();
         board.setUrl("junitTestURL"); //test whatever site? Test improper URLs?
         board.setName("junit");
-        board.setHostid(testHost);
+        board.setHostid(new Host(1));
 
         //get an instance of EntityManager
         EntityManager em = EMFactory.getEMF().createEntityManager();
@@ -74,17 +71,17 @@ public class BoardLogicTest {
         em.getTransaction().commit();
         //close EntityManager
         em.close();
-
+        
         logic = LogicFactory.getFor("Board");
     }
-
+    
     @AfterEach
     final void tearDown() throws Exception {
         if (expectedBoard != null) {
             logic.delete(expectedBoard);
         }
     }
-
+    
     @Test
     final void testGetAll() {
         //get all the accounts from the DB
@@ -114,9 +111,8 @@ public class BoardLogicTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getUrl(), actual.getUrl());
         assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getHostid().getId(), actual.getHostid().getId());
     }
-
+    
     @Test
     final void testGetWithId() {
         //using the id of test account get another account from logic
@@ -131,13 +127,13 @@ public class BoardLogicTest {
         List<Board> boards = logic.getBoardsWithHostID(expectedBoard.getHostid().getId());
         //TODO follow pseudo code
     }
-
+    
     @Test
     final void testGetBoardsWithName() {
         List<Board> boards = logic.getBoardsWithName(expectedBoard.getName());
         //TODO follow pseudo code
     }
-
+    
     @Test
     final void testGetBoardWithUrl() {
         Board returnedBoard = logic.getBoardWithUrl(expectedBoard.getUrl());
@@ -145,64 +141,60 @@ public class BoardLogicTest {
         //the two accounts (testAcounts and returnedAccounts) must be the same
         assertBoardEquals(expectedBoard, returnedBoard);
     }
-
+    
     @Test
     final void testCreateEntity() {
         Map<String, String[]> sampleMap = new HashMap<>();
         sampleMap.put(BoardLogic.ID, new String[]{Integer.toString(expectedBoard.getId())});
         sampleMap.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
         sampleMap.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
-        sampleMap.put(BoardLogic.HOST_ID, new String[]{Integer.toString(1)});
-
+        
         Board returnedBoard = logic.createEntity(sampleMap);
-
+        
         assertBoardEquals(expectedBoard, returnedBoard);
     }
-
+    
     @Test
     final void testCreateEntityNullAndEmptyValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
         Consumer<Map<String, String[]>> fillMap = (Map<String, String[]> map) -> {
             map.clear();
-        map.put(BoardLogic.ID, new String[]{Integer.toString(expectedBoard.getId())});
-        map.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
-        map.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
-        map.put(BoardLogic.HOST_ID, new String[]{Integer.toString(1)});
+            map.put(BoardLogic.ID, new String[]{Integer.toString(expectedBoard.getId())});
+            map.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
+            map.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
         };
-        
+
         //idealy every test should be in its own method
         fillMap.accept(sampleMap);
         sampleMap.replace(BoardLogic.ID, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.ID, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
-
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
+        
         fillMap.accept(sampleMap);
         sampleMap.replace(BoardLogic.URL, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.URL, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
-
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
+        
         fillMap.accept(sampleMap);
         sampleMap.replace(BoardLogic.NAME, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.NAME, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
-
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         
     }
-
+    
     @Test
     final void testCreateEntityBadLengthValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
         Consumer<Map<String, String[]>> fillMap = (Map<String, String[]> map) -> {
             map.clear();
-        sampleMap.put(BoardLogic.ID, new String[]{Integer.toString(expectedBoard.getId())});
-        sampleMap.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
-        sampleMap.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
-        sampleMap.put(BoardLogic.HOST_ID, new String[]{Integer.toString(1)});
+            sampleMap.put(BoardLogic.ID, new String[]{Integer.toString(expectedBoard.getId())});
+            sampleMap.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
+            sampleMap.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
         };
-                
+        
         IntFunction<String> generateString = (int length) -> {
             //https://www.baeldung.com/java-random-string#java8-alphabetic
             return new Random().ints('a', 'z' + 1).limit(length)
@@ -216,21 +208,21 @@ public class BoardLogicTest {
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.ID, new String[]{"12b"});
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
-
+        
         fillMap.accept(sampleMap);
         sampleMap.replace(BoardLogic.URL, new String[]{""});
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.URL, new String[]{generateString.apply(256)});
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
-
+        
         fillMap.accept(sampleMap);
         sampleMap.replace(BoardLogic.NAME, new String[]{""});
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(BoardLogic.NAME, new String[]{generateString.apply(101)});
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
-
+        
     }
-
+    
     @Test
     final void testCreateEntityEdgeValues() {
         IntFunction<String> generateString = (int length) -> {
@@ -239,46 +231,42 @@ public class BoardLogicTest {
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
         };
-
+        
         Map<String, String[]> sampleMap = new HashMap<>();
         sampleMap.put(BoardLogic.ID, new String[]{Integer.toString(1)});
         sampleMap.put(BoardLogic.URL, new String[]{expectedBoard.getUrl()});
         sampleMap.put(BoardLogic.NAME, new String[]{expectedBoard.getName()});
-        sampleMap.put(BoardLogic.HOST_ID, new String[]{Integer.toString(1)});
 
         //idealy every test should be in its own method
         Board returnedBoard = logic.createEntity(sampleMap);
         assertEquals(Integer.parseInt(sampleMap.get(BoardLogic.ID)[0]), returnedBoard.getId());
         assertEquals(sampleMap.get(BoardLogic.URL)[0], returnedBoard.getUrl());
         assertEquals(sampleMap.get(BoardLogic.NAME)[0], returnedBoard.getName());
-        assertEquals(sampleMap.get(BoardLogic.HOST_ID)[0], Integer.toString(returnedBoard.getHostid().getId()));
-
+        
         sampleMap = new HashMap<>();
         sampleMap.put(BoardLogic.ID, new String[]{Integer.toString(1)});
         sampleMap.put(BoardLogic.URL, new String[]{generateString.apply(255)});
         sampleMap.put(BoardLogic.NAME, new String[]{generateString.apply(100)});
-        sampleMap.put(BoardLogic.HOST_ID, new String[]{Integer.toString(1)});
 
         //idealy every test should be in its own method
         returnedBoard = logic.createEntity(sampleMap);
         assertEquals(Integer.parseInt(sampleMap.get(BoardLogic.ID)[0]), returnedBoard.getId());
         assertEquals(sampleMap.get(BoardLogic.URL)[0], returnedBoard.getUrl());
         assertEquals(sampleMap.get(BoardLogic.NAME)[0], returnedBoard.getName());
-        assertEquals(sampleMap.get(BoardLogic.HOST_ID)[0], Integer.toString(returnedBoard.getHostid().getId()));
     }
-
+    
     @Test
     final void testGetColumnNames() {
         List<String> list = logic.getColumnNames();
         assertEquals(Arrays.asList("ID", "Url", "Name", "Host ID"), list);
     }
-
+    
     @Test
     final void testGetColumnCodes() {
         List<String> list = logic.getColumnCodes();
         assertEquals(Arrays.asList(BoardLogic.ID, BoardLogic.URL, BoardLogic.NAME, BoardLogic.HOST_ID), list);
     }
-
+    
     @Test
     final void testExtractDataAsList() {
         List<?> list = logic.extractDataAsList(expectedBoard);
@@ -286,8 +274,8 @@ public class BoardLogicTest {
         assertEquals(expectedBoard.getUrl(), list.get(1));
         assertEquals(expectedBoard.getName(), list.get(2));
         
-        Host host = (Host)list.get(3);
+        Host host = (Host) list.get(3);
         assertEquals(expectedBoard.getHostid().getId(), host.getId());
-
+        
     }
 }

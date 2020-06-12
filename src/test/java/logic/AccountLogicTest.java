@@ -221,27 +221,27 @@ class AccountLogicTest {
         //idealy every test should be in its own method
         fillMap.accept(sampleMap);
         sampleMap.replace(AccountLogic.ID, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(AccountLogic.ID, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
 
         fillMap.accept(sampleMap);
         sampleMap.replace(AccountLogic.NICKNAME, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(AccountLogic.NICKNAME, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
 
         fillMap.accept(sampleMap);
         sampleMap.replace(AccountLogic.USERNAME, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(AccountLogic.USERNAME, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
 
         fillMap.accept(sampleMap);
         sampleMap.replace(AccountLogic.PASSWORD, null);
-        assertThrows(NullPointerException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
         sampleMap.replace(AccountLogic.PASSWORD, new String[]{});
-        assertThrows(IndexOutOfBoundsException.class, () -> logic.createEntity(sampleMap));
+        assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
     }
 
     @Test
