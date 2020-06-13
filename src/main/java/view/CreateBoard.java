@@ -29,7 +29,7 @@ import logic.LogicFactory;
 public class CreateBoard extends HttpServlet {
 
     private String errorMessage = null;
-    HostLogic hLogic = LogicFactory.getFor("Host");
+    private HostLogic hLogic = LogicFactory.getFor("Host");
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
