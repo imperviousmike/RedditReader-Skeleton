@@ -11,6 +11,7 @@ import logic.BoardLogic;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +29,7 @@ import logic.LogicFactory;
 public class CreateBoard extends HttpServlet {
 
     private String errorMessage = null;
+    HostLogic hLogic = LogicFactory.getFor("Host");
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -60,6 +62,15 @@ public class CreateBoard extends HttpServlet {
             out.println("<br>");
             out.println("Name:<br>");
             out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", BoardLogic.NAME);
+            out.println("<br>");
+            out.printf("<label for=\"%s\">%s</label>", BoardLogic.HOST_ID, "Host:&emsp;");
+            out.printf("<select name=\"%s\">", BoardLogic.HOST_ID);
+            List<Host> hList = hLogic.getAll();
+            for (Host h : hList) {
+                out.printf("<option value=\"%d\">%s</option>", h.getId(), h.getName());
+            }
+            out.printf("</select>");
+            out.println("<br>");
             out.println("<br>");
             out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
             out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
@@ -129,9 +140,7 @@ public class CreateBoard extends HttpServlet {
         BoardLogic bLogic = LogicFactory.getFor("Board");
         String url = request.getParameter(BoardLogic.URL);
         if (bLogic.getBoardWithUrl(url) == null) {
-            HostLogic hLogic = LogicFactory.getFor("Host");
             Board board = bLogic.createEntity(request.getParameterMap());
-                                                                           //Tried both bLogic and BoardLogic here
             Host host = hLogic.getWithId(Integer.parseInt(request.getParameter(BoardLogic.HOST_ID)));
             board.setHostid(host);
             bLogic.add(board);
