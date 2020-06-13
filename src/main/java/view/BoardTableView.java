@@ -42,7 +42,7 @@ public class BoardTableView extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
-            out.println("<caption>Account</caption>");
+            out.println("<caption>Boards</caption>");
             
             BoardLogic logic = LogicFactory.getFor("Board");
             
