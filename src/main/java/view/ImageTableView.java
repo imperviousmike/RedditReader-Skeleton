@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package view;
-import common.FileUtility;
+
 import entity.Image;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,7 +25,7 @@ import logic.LogicFactory;
  */
 @WebServlet(name = "ImageTable", urlPatterns = {"/ImageTable"})
 public class ImageTableView extends HttpServlet {
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,18 +37,18 @@ public class ImageTableView extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
             out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/tablestyle.css\"> ");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>HostViewNormal</title>");
+            out.println("<title>ImageViewNormal</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
-            out.println("<caption>Host</caption>");
+            out.println("<caption>Images</caption>");
 
             ImageLogic logic = LogicFactory.getFor("Image");
 
@@ -65,7 +65,7 @@ public class ImageTableView extends HttpServlet {
                         logic.extractDataAsList(image).toArray());
             }
 
-            //making headers again for the bottom of the table I guess?
+            //making headers again for the bottom of the table
             out.println("<tr>");
             for (String columnName : logic.getColumnNames()) {
                 out.println("<th>" + columnName + "</th>");
@@ -102,38 +102,6 @@ public class ImageTableView extends HttpServlet {
             throws ServletException, IOException {
         log("GET");
         processRequest(request, response);
-         
-        FileUtility.createDirectory(System.getProperty("user.home"));
-        FileUtility.createDirectory(System.getProperty("/My Documents/RedditImages/"));
-        
-        //Using LogicFactory get the logics you need to create and add an Image 
-        //to DB. Don’t forget the dependencies
-        LogicFactory.getFor("Image");
-        
-    //3)Get the board you want to use. You will use the name of this board object 
-    //in reddit buildRedditPageConfig method. 
-    
-    //4) Use the example provided in reddit.TestRunReddit::exampleForReadingNextPage 
-    //to see how to use the reddit object. 
-    
-    //5) Create your custom lambda to create and Image entity, download it and 
-    //add it to DB. 
-    
-    //a) Only accept post that are over18 and are images. 
-    
-    //b) The image should not already exist in the db. 
-    
-    //c) You must use createEntity to create entities, do not use the constructor 
-    //      of entities outside of createEntity method. 
-    
-    //d) Download it to your computer using FileUtility::downloadAndSaveFile(String url, String dest). 
-    //      1) Destination is the folder you made in step 1. 
-    
-    //e) Extract the data from the Post object which is the argument of your lambda. 
-    //      Add them to a newly created Map using ImageLogic static variables as keys. 
-    
-    //f) Create the Entity image, set the dependency and add it to db. 
-        
     }
 
     /**
