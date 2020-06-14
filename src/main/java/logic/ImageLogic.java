@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 public class ImageLogic extends GenericLogic<Image, ImageDAL> {
 
-    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     public static final String ID = "id";
     public static final String URL = "url";
     public static final String TITLE = "title";
@@ -83,7 +83,7 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
                     case URL:
                         String url = parameterMap.get(URL)[0];
                         ValidationUtil.validateString(url, 255);
-                        entity.setUrl(URL);
+                        entity.setUrl(url);
                         break;
                     case TITLE:
                         String title = parameterMap.get(TITLE)[0];
