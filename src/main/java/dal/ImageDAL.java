@@ -5,6 +5,7 @@
  */
 package dal;
 
+import entity.Board;
 import entity.Image;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class ImageDAL extends GenericDAL<Image> {
 
     public List<Image> findByBoardId(int boardId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Board_id", boardId);
+        map.put("boardid", new Board(boardId));
         return findResults("Image.findByBoardId", map);
     }
 
@@ -59,7 +60,7 @@ public class ImageDAL extends GenericDAL<Image> {
 
     public Image findByLocalPath(String localPath) {
         Map<String, Object> map = new HashMap<>();
-        map.put("local_path", localPath);
+        map.put("localPath", localPath);
         return findResult("Image.findByLocalPath", map);
     }
 

@@ -157,7 +157,6 @@ public class HostLogicTest {
             map.put(HostLogic.EXTRACTION_TYPE, new String[]{expectedHost.getExtractionType()});
         };
 
-        //idealy every test should be in its own method
         fillMap.accept(sampleMap);
         sampleMap.replace(HostLogic.ID, null);
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
@@ -244,7 +243,6 @@ public class HostLogicTest {
         sampleMap.put(HostLogic.URL, new String[]{generateString.apply(1)});
         sampleMap.put(HostLogic.EXTRACTION_TYPE, new String[]{extraction});
 
-        //idealy every test should be in its own method
         Host returnedHost = logic.createEntity(sampleMap);
         assertEquals(Integer.parseInt(sampleMap.get(HostLogic.ID)[0]), returnedHost.getId());
         assertEquals(sampleMap.get(HostLogic.NAME)[0], returnedHost.getName());
@@ -257,7 +255,6 @@ public class HostLogicTest {
         sampleMap.put(HostLogic.URL, new String[]{generateString.apply(45)});
         sampleMap.put(HostLogic.EXTRACTION_TYPE, new String[]{extraction});
 
-        //idealy every test should be in its own method
         returnedHost = logic.createEntity(sampleMap);
         assertEquals(Integer.parseInt(sampleMap.get(HostLogic.ID)[0]), returnedHost.getId());
         assertEquals(sampleMap.get(HostLogic.NAME)[0], returnedHost.getName());
