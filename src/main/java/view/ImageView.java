@@ -32,11 +32,11 @@ import reddit.Sort;
  * @author Earl_Grey_Hot
  */
 @WebServlet(name = "ImageView", urlPatterns = {"/ImageView"})
-
 public class ImageView extends HttpServlet {
-    
-    public static final String BOARD_NAME = "Wallpaper";
-    
+
+    private static final String BOARD_NAME = "Wallpaper";
+    private Board wallpaperBoard;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -103,46 +103,62 @@ public class ImageView extends HttpServlet {
 
         //3)Get the board you want to use. You will use the name of this board object 
         //in reddit buildRedditPageConfig method. 
-        
-         BoardLogic blogic = LogicFactory.getFor("Board");
-         List<Board> wallpaperList = blogic.getBoardsWithName("Wallpaper");
-         Board wallpaperBoard;
-         
-         if(wallpaperList.size() > 1){
-             for(Board board : wallpaperList)
-                 if(board.getName() == BOARD_NAME)
-                     wallpaperBoard = board;
+        BoardLogic blogic = LogicFactory.getFor("Board");
+        List<Board> wallpaperList = blogic.getBoardsWithName(BOARD_NAME);
+        wallpaperBoard = new Board();
+
+        if (wallpaperList.size() > 1) {
+            for (Board board : wallpaperList) {
+                if (board.getName().equals(BOARD_NAME)) {
+                    wallpaperBoard = board;
+                }
+            }
+        } else {
+            wallpaperBoard = wallpaperList.get(0);
         }
-         
+
         //4) Use the example provided in reddit.TestRunReddit::exampleForReadingNextPage 
         //to see how to use the reddit object. 
-
         //create a lambda that accepts post
         Consumer<Post> saveImage = (Post post) -> {
             //if post is an image and SFW
             if (post.isImage() && !post.isOver18()) {
-                
-                //save it in user's directory - /Users/[current user name]/Documents/RedditImages
-                FileUtility.downloadAndSaveFile(post.getUrl(), saveDir);
-                
-                Map<String, String[]> imageMap = new HashMap<>();
-                imageMap.put(ImageLogic.URL, new String[]{post.getUrl()});
-                imageMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
-                imageMap.put(ImageLogic.DATE, new String[]{post.getDate().toString()});
-                imageMap.put(ImageLogic.LOCAL_PATH, new String[]{saveDir});
 
-                Image returnedImage = logic.createEntity(imageMap);
-                logic.add(returnedImage);
+                //image should not already exist in the db
+                List<Image> imageList = logic.getAll();
+                Boolean exists = false;
+                for (Image i : imageList) {
+                    if (i.getUrl().equals(post.getUrl())) {
+                        exists = true;
+                    }
+                }
+
+                FileUtility.downloadAndSaveFile(post.getUrl(), saveDir);
+
+                /*    if (!exists) {
+                        Map<String, String[]> imageMap = new HashMap<>();
+                        imageMap.put(ImageLogic.URL, new String[]{post.getUrl()});
+                        imageMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
+                        imageMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
+                        imageMap.put(ImageLogic.LOCAL_PATH, new String[]{saveDir});
+                        imageMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(wallpaperBoard.getId())});
+                        Image returnedImage = logic.createEntity(imageMap);
+                        logic.add(returnedImage);
+                    }
+                }*/
             }
         };
 
         //create a new scraper
         Reddit scrap = new Reddit();
         //authenticate and set up a page for wallpaper subreddit with 5 posts sorted by HOT order
-        scrap.authenticate().buildRedditPagesConfig("Wallpaper", 5, Sort.BEST);
+
+        scrap.authenticate()
+                .buildRedditPagesConfig(wallpaperBoard.getName(), 5, Sort.BEST);
         //get the next page 3 times and save the images.
-        scrap.requestNextPage().proccessNextPage(saveImage);
-    
+        scrap.requestNextPage()
+                .proccessNextPage(saveImage);
+
         //5) Create your custom lambda to create an Image entity, download it and 
         //add it to DB. 
         //a) Only accept post that are over18 and are images. 
@@ -165,6 +181,7 @@ public class ImageView extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         log("POST");
