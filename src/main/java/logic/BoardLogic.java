@@ -32,7 +32,7 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     public static final String ID = "id";
     public static final String URL = "url";
     public static final String NAME = "name";
-    public static final String HOST_ID = "hostid";
+    public static final String HOST_ID = "hostId";
 
     BoardLogic() {
         super(new BoardDAL());
@@ -49,7 +49,7 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     }
 
     public List<Board> getBoardsWithHostID(int hostid) {
-        return get(() -> dal().findByHostid(hostid));
+        return get(() -> dal().findByHostId(hostid));
     }
 
     public List<Board> getBoardsWithName(String name) {

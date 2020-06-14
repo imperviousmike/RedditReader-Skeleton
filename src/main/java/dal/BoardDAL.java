@@ -6,6 +6,7 @@
 package dal;
 
 import entity.Board;
+import entity.Host;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,10 @@ public class BoardDAL extends GenericDAL<Board> {
         return findResult("Board.findById", map);
     }
 
-    public List<Board> findByHostid(int hostId) {
+    public List<Board> findByHostId(int hostId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("hostid", hostId);
-        return findResults("Board.findByHostid", map);
+        map.put("hostid", new Host(hostId));
+        return findResults("Board.findByHostId", map);
     }
 
     public Board findByUrl(String url) {
