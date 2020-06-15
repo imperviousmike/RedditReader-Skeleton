@@ -71,22 +71,25 @@ public class AccountTableViewJSP extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param req  servlet request
+     * @param req servlet request
      * @param resp servlet response
      *
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         log("POST");
+        AccountLogic logic = LogicFactory.getFor("Account");
         Map<String, String[]> map = req.getParameterMap();
         if (map.containsKey("deleteMark")) {
-            AccountLogic logic = LogicFactory.getFor("Account");
             for (String delete : map.get("deleteMark")) {
                 logic.delete(logic.getWithId(Integer.valueOf(delete)));
             }
+        } else if (req.getParameter("edit") != null) {
+            Account account = logic.createEntity(req.getParameterMap());
+            logic.update(account);
         }
         fillTableData(req, resp);
     }
@@ -94,11 +97,11 @@ public class AccountTableViewJSP extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param req  servlet request
+     * @param req servlet request
      * @param resp servlet response
      *
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -110,11 +113,11 @@ public class AccountTableViewJSP extends HttpServlet {
     /**
      * Handles the HTTP <code>PUT</code> method.
      *
-     * @param req  servlet request
+     * @param req servlet request
      * @param resp servlet response
      *
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
@@ -126,11 +129,11 @@ public class AccountTableViewJSP extends HttpServlet {
     /**
      * Handles the HTTP <code>DELETE</code> method.
      *
-     * @param req  servlet request
+     * @param req servlet request
      * @param resp servlet response
      *
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
