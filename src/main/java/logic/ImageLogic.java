@@ -158,11 +158,11 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
     }
 
     public List<String> getColumnCodes() {
-        return Arrays.asList(ID, URL, TITLE, DATE, LOCAL_PATH, BOARD_ID );
+        return Arrays.asList(ID, URL, TITLE, DATE, LOCAL_PATH, BOARD_ID);
     }
 
     @Override
     public List extractDataAsList(Image e) {
-        return Arrays.asList(e.getId(), e.getUrl(), e.getTitle(), e.getDate(), e.getLocalPath() , e.getBoard().getId());
+        return Arrays.asList(e.getId(), e.getUrl(), e.getTitle(), e.getDate(), e.getLocalPath(), e.getBoard());
     }
 }
