@@ -67,7 +67,7 @@ public class ImageView extends HttpServlet {
             for (Image i : imageList) {
                 out.println("<div align=\"center\">");
                 out.println("<div align=\"center\" class=\"imageContainer\">");
-                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "file:///" + i.getLocalPath());
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + i.getLocalPath());
                 out.println("</div>");
                 out.println("</div>");
             }
