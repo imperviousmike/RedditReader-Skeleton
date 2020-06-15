@@ -10,6 +10,7 @@ import entity.Board;
 import entity.Image;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,9 @@ import reddit.Sort;
 public class ImageView extends HttpServlet {
 
     private static final String BOARD_NAME = "Wallpaper";
-    private static final String SAVE_DIR = "/Documents/RedditImages/";
-    private Board wallpaperBoard;
+    private static final String SAVE_DIR = System.getProperty("user.home") + "\\Documents\\RedditImages\\";
+
+    private Board board;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,7 +54,7 @@ public class ImageView extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/tablestyle.css\"> ");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/ImageView.css\"> ");
             out.println("<html>");
             out.println("<head>");
             out.println("<title>ImagesViewNormal</title>");
@@ -60,9 +62,15 @@ public class ImageView extends HttpServlet {
             out.println("<body>");
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
             out.println("<caption>Images</caption>");
-
             ImageLogic logic = LogicFactory.getFor("Image");
-
+            List<Image> imageList = logic.getAll();
+            for (Image i : imageList) {
+                out.println("<div align=\"center\">");
+                out.println("<div align=\"center\" class=\"imageContainer\">");
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "file:///" + i.getLocalPath());
+                out.println("</div>");
+                out.println("</div>");
+            }
             out.printf("<div style=\"text-align: center;\"><pre>%s</pre></div>", toStringMap(request.getParameterMap()));
             out.println("</body>");
             out.println("</html>");
@@ -95,83 +103,56 @@ public class ImageView extends HttpServlet {
         log("GET");
         processRequest(request, response);
 
-        String saveDir = System.getProperty("user.home") + SAVE_DIR;
-        FileUtility.createDirectory(saveDir);
+        FileUtility.createDirectory(SAVE_DIR);
 
-        //Using LogicFactory get the logics you need to create and add an Image 
-        //to DB. Don’t forget the dependencies
-        ImageLogic logic = LogicFactory.getFor("Image");
+        ImageLogic imageLogic = LogicFactory.getFor("Image");
+        BoardLogic boardLogic = LogicFactory.getFor("Board");
+        List<Board> boardList = boardLogic.getBoardsWithName(BOARD_NAME);
 
-        //3)Get the board you want to use. You will use the name of this board object 
-        //in reddit buildRedditPageConfig method. 
-        BoardLogic blogic = LogicFactory.getFor("Board");
-        List<Board> wallpaperList = blogic.getBoardsWithName(BOARD_NAME);
-        
-      
-        if (wallpaperList.size() > 1) {
-            for (Board board : wallpaperList) {
-                if (board.getName().equals(BOARD_NAME)) 
-                    wallpaperBoard = board;   
+        for (Board b : boardList) {
+            if (b.getName().equals(BOARD_NAME)) {
+                board = b;
             }
-        } else {
-            wallpaperBoard = wallpaperList.get(0);
         }
-       
-        
-        //4) Use the example provided in reddit.TestRunReddit::exampleForReadingNextPage 
-        //to see how to use the reddit object. 
-        //create a lambda that accepts post
+
         Consumer<Post> saveImage = (Post post) -> {
-            //if post is an image and SFW
+
             if (post.isImage() && !post.isOver18()) {
-
-                //image should not already exist in the db - correctly checking?
-                List<Image> imageList = logic.getAll();
+                String path = post.getUrl();
+                List<Image> imageList;
+                try {
+                    imageList = imageLogic.getAll();
+                } catch (NullPointerException e) {
+                    imageList = new ArrayList<>();
+                }
                 Boolean exists = false;
-                for (Image i : imageList) {
-                    if (i.getUrl().equals(post.getUrl())) {
-                        exists = true;
+
+                if (imageList.isEmpty()) {
+                    imageLogic.add(createImageEntity(imageLogic, post));
+                    FileUtility.downloadAndSaveFile(path, SAVE_DIR);
+                } else {
+                    for (Image i : imageList) {
+                        if (i.getUrl().equals(post.getUrl())) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        imageLogic.add(createImageEntity(imageLogic, post));
+                        FileUtility.downloadAndSaveFile(path, SAVE_DIR);
                     }
                 }
-
-                FileUtility.downloadAndSaveFile(post.getUrl(), saveDir);
-
-                if (!exists) {
-                    for(int i = 0; i < 5; i++){
-                        Map<String, String[]> imageMap = new HashMap<>();
-                        imageMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(wallpaperBoard.getId())});
-                        imageMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
-                        imageMap.put(ImageLogic.URL, new String[]{post.getUrl()});
-                        imageMap.put(ImageLogic.LOCAL_PATH, new String[]{saveDir + post.getUrl()});
-                        imageMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
-
-                        Image returnedImage = logic.createEntity(imageMap);
-                        logic.add(returnedImage);
-                    }
-                }
-                
             }
         };
 
         //create a new scraper
         Reddit scrap = new Reddit();
-        //authenticate and set up a page for wallpaper subreddit with 5 posts sorted by HOT order
+        //authenticate and set up a page for wallpaper subreddit with 5 posts soreted by HOT order
 
-        scrap.authenticate().buildRedditPagesConfig(wallpaperBoard.getName(), 5, Sort.BEST);
+        scrap.authenticate()
+                .buildRedditPagesConfig(board.getName(), 15, Sort.BEST);
         //get the next page 3 times and save the images.
-        scrap.requestNextPage().proccessNextPage(saveImage);
-
-        //5) Create your custom lambda to create an Image entity, download it and 
-        //add it to DB. 
-        //a) Only accept post that are over18 and are images. 
-        //b) The image should not already exist in the db. 
-        //c) You must use createEntity to create entities, do not use the constructor 
-        //      of entities outside of createEntity method. 
-        //d) Download it to your computer using FileUtility::downloadAndSaveFile(String url, String dest). 
-        //      1) Destination is the folder you made in step 1. 
-        //e) Extract the data from the Post object which is the argument of your lambda. 
-        //      Add them to a newly created Map using ImageLogic static variables as keys. 
-        //f) Create the Entity image, set the dependency and add it to db. 
+        scrap.requestNextPage()
+                .proccessNextPage(saveImage);
     }
 
     /**
@@ -197,7 +178,7 @@ public class ImageView extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Sample of Host View Normal";
+        return "ImageView servlet";
     }
 
     private static final boolean DEBUG = true;
@@ -212,5 +193,17 @@ public class ImageView extends HttpServlet {
     public void log(String msg, Throwable t) {
         String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
         getServletContext().log(message, t);
+    }
+
+    private Image createImageEntity(ImageLogic logic, Post post) {
+        Map<String, String[]> inputMap = new HashMap<>();
+        inputMap.put(ImageLogic.URL, new String[]{post.getUrl()});
+        inputMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
+        String[] parseUrl = post.getUrl().split("/");
+        String parsedImageName = parseUrl[3];
+        inputMap.put(ImageLogic.LOCAL_PATH, new String[]{SAVE_DIR + parsedImageName});
+        inputMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
+        inputMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(board.getId())});
+        return logic.createEntity(inputMap);
     }
 }
