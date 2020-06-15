@@ -67,7 +67,7 @@ public class ImageView extends HttpServlet {
             for (Image i : imageList) {
                 out.println("<div align=\"center\">");
                 out.println("<div align=\"center\" class=\"imageContainer\">");
-                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + i.getLocalPath());
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath()));
                 out.println("</div>");
                 out.println("</div>");
             }
@@ -199,9 +199,7 @@ public class ImageView extends HttpServlet {
         Map<String, String[]> inputMap = new HashMap<>();
         inputMap.put(ImageLogic.URL, new String[]{post.getUrl()});
         inputMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
-        String[] parseUrl = post.getUrl().split("/");
-        String parsedImageName = parseUrl[3];
-        inputMap.put(ImageLogic.LOCAL_PATH, new String[]{SAVE_DIR + parsedImageName});
+        inputMap.put(ImageLogic.LOCAL_PATH, new String[]{SAVE_DIR + FileUtility.getFileName(post.getUrl())});
         inputMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
         inputMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(board.getId())});
         return logic.createEntity(inputMap);
