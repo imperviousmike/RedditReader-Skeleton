@@ -61,7 +61,7 @@ public class ImageTableView extends HttpServlet {
 
             List<Image> entities = logic.getAll();
             for (Image image : entities) {
-                out.printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                out.printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
                         logic.extractDataAsList(image).toArray());
             }
 

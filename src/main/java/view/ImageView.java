@@ -35,6 +35,7 @@ import reddit.Sort;
 public class ImageView extends HttpServlet {
 
     private static final String BOARD_NAME = "Wallpaper";
+    private static final String SAVE_DIR = "/Documents/RedditImages/";
     private Board wallpaperBoard;
 
     /**
@@ -94,7 +95,7 @@ public class ImageView extends HttpServlet {
         log("GET");
         processRequest(request, response);
 
-        String saveDir = System.getProperty("user.home") + "/Documents/RedditImages/";
+        String saveDir = System.getProperty("user.home") + SAVE_DIR;
         FileUtility.createDirectory(saveDir);
 
         //Using LogicFactory get the logics you need to create and add an Image 
@@ -105,18 +106,18 @@ public class ImageView extends HttpServlet {
         //in reddit buildRedditPageConfig method. 
         BoardLogic blogic = LogicFactory.getFor("Board");
         List<Board> wallpaperList = blogic.getBoardsWithName(BOARD_NAME);
-        wallpaperBoard = new Board();
-
+        
+      
         if (wallpaperList.size() > 1) {
             for (Board board : wallpaperList) {
-                if (board.getName().equals(BOARD_NAME)) {
-                    wallpaperBoard = board;
-                }
+                if (board.getName().equals(BOARD_NAME)) 
+                    wallpaperBoard = board;   
             }
         } else {
             wallpaperBoard = wallpaperList.get(0);
         }
-
+       
+        
         //4) Use the example provided in reddit.TestRunReddit::exampleForReadingNextPage 
         //to see how to use the reddit object. 
         //create a lambda that accepts post
@@ -124,7 +125,7 @@ public class ImageView extends HttpServlet {
             //if post is an image and SFW
             if (post.isImage() && !post.isOver18()) {
 
-                //image should not already exist in the db
+                //image should not already exist in the db - correctly checking?
                 List<Image> imageList = logic.getAll();
                 Boolean exists = false;
                 for (Image i : imageList) {
@@ -135,17 +136,20 @@ public class ImageView extends HttpServlet {
 
                 FileUtility.downloadAndSaveFile(post.getUrl(), saveDir);
 
-                /*    if (!exists) {
+                if (!exists) {
+                    for(int i = 0; i < 5; i++){
                         Map<String, String[]> imageMap = new HashMap<>();
-                        imageMap.put(ImageLogic.URL, new String[]{post.getUrl()});
-                        imageMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
-                        imageMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
-                        imageMap.put(ImageLogic.LOCAL_PATH, new String[]{saveDir});
                         imageMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(wallpaperBoard.getId())});
+                        imageMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
+                        imageMap.put(ImageLogic.URL, new String[]{post.getUrl()});
+                        imageMap.put(ImageLogic.LOCAL_PATH, new String[]{saveDir + post.getUrl()});
+                        imageMap.put(ImageLogic.DATE, new String[]{logic.convertDate(post.getDate())});
+
                         Image returnedImage = logic.createEntity(imageMap);
                         logic.add(returnedImage);
                     }
-                }*/
+                }
+                
             }
         };
 
@@ -153,11 +157,9 @@ public class ImageView extends HttpServlet {
         Reddit scrap = new Reddit();
         //authenticate and set up a page for wallpaper subreddit with 5 posts sorted by HOT order
 
-        scrap.authenticate()
-                .buildRedditPagesConfig(wallpaperBoard.getName(), 5, Sort.BEST);
+        scrap.authenticate().buildRedditPagesConfig(wallpaperBoard.getName(), 5, Sort.BEST);
         //get the next page 3 times and save the images.
-        scrap.requestNextPage()
-                .proccessNextPage(saveImage);
+        scrap.requestNextPage().proccessNextPage(saveImage);
 
         //5) Create your custom lambda to create an Image entity, download it and 
         //add it to DB. 

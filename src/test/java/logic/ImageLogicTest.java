@@ -322,13 +322,13 @@ public class ImageLogicTest {
     @Test
     final void testGetColumnNames() {
         List<String> list = logic.getColumnNames();
-        assertEquals(Arrays.asList("ID, URL, Title, Date, LocalPath,BoardID"), list);
+        assertEquals(Arrays.asList("ID", "URL", "Title", "Date", "LocalPath", "BoardID"), list);
     }
 
     @Test
     final void testGetColumnCodes() {
         List<String> list = logic.getColumnCodes();
-        assertEquals(Arrays.asList(ImageLogic.ID, ImageLogic.URL, ImageLogic.TITLE, ImageLogic.DATE, ImageLogic.LOCAL_PATH, ImageLogic.BOARD_ID), list);
+        assertEquals(Arrays.asList(ImageLogic.ID, ImageLogic.URL, ImageLogic.TITLE, ImageLogic.DATE, ImageLogic.LOCAL_PATH, ImageLogic.BOARD_ID), list); 
 
     }
 
