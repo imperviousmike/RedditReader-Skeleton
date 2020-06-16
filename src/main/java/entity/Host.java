@@ -28,7 +28,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Host.findById", query = "SELECT h FROM Host h WHERE h.id = :id"),
     @NamedQuery(name = "Host.findByName", query = "SELECT h FROM Host h WHERE h.name = :name"),
     @NamedQuery(name = "Host.findByUrl", query = "SELECT h FROM Host h WHERE h.url = :url"),
-    @NamedQuery(name = "Host.findByExtractionType", query = "SELECT h FROM Host h WHERE h.extractionType = :extractionType")})
+    @NamedQuery(name = "Host.findByExtractionType", query = "SELECT h FROM Host h WHERE h.extractionType = :extractionType"),
+    @NamedQuery(name = "Host.findContaining", query = "SELECT h FROM Host h WHERE h.name like CONCAT('%', :search, '%') or h.extractionType like CONCAT('%', :search, '%')")})
 //the colon before names means it is substitutable variable.
 //named queries follow JPQL standard, which are object oriented SQL queries.
 public class Host implements Serializable {

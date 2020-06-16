@@ -50,4 +50,10 @@ public class HostDAL extends GenericDAL<Host> {
         return findResults("Host.findByExtractionType", map);
     }
 
+    public List<Host> findContaining(String search) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("search", search);
+        return findResults("Host.findContaining", map);
+    }
+
 }

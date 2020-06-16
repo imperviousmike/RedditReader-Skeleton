@@ -60,8 +60,13 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
     }
 
     @Override
+    public List<Host> search(String search) {
+        return get(() -> dal().findContaining(search));
+    }
+
+    @Override
     public Host createEntity(Map<String, String[]> parameterMap) {
-        
+
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
         Host entity = new Host();
         for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
