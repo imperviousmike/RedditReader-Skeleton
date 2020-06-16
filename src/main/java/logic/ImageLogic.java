@@ -71,6 +71,11 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
     }
 
     @Override
+    public List<Image> search(String search) {
+        return get(() -> dal().findContaining(search));
+    }
+
+    @Override
     public Image createEntity(Map<String, String[]> parameterMap) {
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
         Image entity = new Image();
