@@ -1,5 +1,6 @@
 package view;
 
+import common.ValidationException;
 import entity.Account;
 import logic.AccountLogic;
 import java.io.IOException;
@@ -14,14 +15,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import javax.servlet.annotation.WebServlet;
-import logic.Logic;
 import logic.LogicFactory;
 
 /**
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet(name = "AccountTableJSP", urlPatterns = {"/AccountTableJSPExample"})
+@WebServlet(name = "AccountTableJSP", urlPatterns = {"/AccountTableJSP"})
 public class AccountTableViewJSP extends HttpServlet {
 
     private void fillTableData(HttpServletRequest req, HttpServletResponse resp)
@@ -31,7 +31,7 @@ public class AccountTableViewJSP extends HttpServlet {
         req.setAttribute("request", toStringMap(req.getParameterMap()));
         req.setAttribute("path", path);
         req.setAttribute("title", path.substring(1));
-        req.getRequestDispatcher("/jsp/ShowTable-Account.jsp").forward(req, resp);
+        req.getRequestDispatcher("/jsp/ShowTable.jsp").forward(req, resp);
     }
 
     private List<?> extractTableData(HttpServletRequest req) {
@@ -88,8 +88,13 @@ public class AccountTableViewJSP extends HttpServlet {
                 logic.delete(logic.getWithId(Integer.valueOf(delete)));
             }
         } else if (req.getParameter("edit") != null) {
+            //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
             Account account = logic.createEntity(req.getParameterMap());
-            logic.update(account);
+            try {
+                logic.update(account);
+            } catch (javax.persistence.RollbackException ex) {
+                throw new ValidationException(ex);
+            }
         }
         fillTableData(req, resp);
     }
