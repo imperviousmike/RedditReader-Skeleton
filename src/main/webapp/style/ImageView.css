@@ -14,15 +14,16 @@ div.imageContainer{
     margin: 10px 10px auto auto;
     padding: 0;
     text-align: center;
+    
 }
 
 div img.imageThumb{
-    vertical-align: middle;
-    text-align: center;
-    margin:0;
     object-fit: cover;
     max-width: 250px;
     max-height: 150px;
     min-width: 250px;
     min-height: 150px;
+    vertical-align: middle;
+    text-align: center;
+    padding-bottom: 5px;
 }
