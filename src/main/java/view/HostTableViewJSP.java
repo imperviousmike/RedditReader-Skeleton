@@ -1,8 +1,7 @@
 package view;
 
 import common.ValidationException;
-import entity.Account;
-import logic.AccountLogic;
+import entity.Host;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -15,14 +14,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import javax.servlet.annotation.WebServlet;
+import logic.HostLogic;
 import logic.LogicFactory;
 
 /**
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet(name = "AccountTableJSP", urlPatterns = {"/AccountTableJSP"})
-public class AccountTableViewJSP extends HttpServlet {
+@WebServlet(name = "HostTableJSP", urlPatterns = {"/HostTableJSP"})
+public class HostTableViewJSP extends HttpServlet {
 
     private void fillTableData(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -36,10 +36,10 @@ public class AccountTableViewJSP extends HttpServlet {
 
     private List<?> extractTableData(HttpServletRequest req) {
         String search = req.getParameter("searchText");
-        AccountLogic logic = LogicFactory.getFor("Account");
+        HostLogic logic = LogicFactory.getFor("Host");
         req.setAttribute("columnName", logic.getColumnNames());
         req.setAttribute("columnCode", logic.getColumnCodes());
-        List<Account> list;
+        List<Host> list;
         if (search != null) {
             list = logic.search(search);
         } else {
@@ -81,7 +81,7 @@ public class AccountTableViewJSP extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         log("POST");
-        AccountLogic logic = LogicFactory.getFor("Account");
+        HostLogic logic = LogicFactory.getFor("Host");
         Map<String, String[]> map = req.getParameterMap();
         if (map.containsKey("deleteMark")) {
             for (String delete : map.get("deleteMark")) {
@@ -89,9 +89,9 @@ public class AccountTableViewJSP extends HttpServlet {
             }
         } else if (req.getParameter("edit") != null) {
             //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Account account = logic.createEntity(req.getParameterMap());
+            Host host = logic.createEntity(req.getParameterMap());
             try {
-                logic.update(account);
+                logic.update(host);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
             }

@@ -30,7 +30,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Board.findById", query = "SELECT b FROM Board b join fetch b.hostid WHERE b.id = :id"),
     @NamedQuery(name = "Board.findByUrl", query = "SELECT b FROM Board b join fetch b.hostid WHERE b.url = :url"),
     @NamedQuery(name = "Board.findByHostId", query = "SELECT b FROM Board b join fetch b.hostid WHERE b.hostid = :hostid"),
-    @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b join fetch b.hostid WHERE b.name = :name")})
+    @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b join fetch b.hostid WHERE b.name = :name"),
+    @NamedQuery(name = "Board.findContaining", query = "SELECT b FROM Board b WHERE b.url like CONCAT('%', :search, '%') or b.name like CONCAT('%', :search, '%')")})
 public class Board implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -132,5 +133,5 @@ public class Board implements Serializable {
     public String toString() {
         return "entity.Board[ id=" + id + " ]";
     }
-    
+
 }

@@ -147,7 +147,7 @@ public class CreateHost extends HttpServlet {
             processRequest(request, response);
         } else if (request.getParameter("view") != null) {
             //if view button is pressed redirect to the appropriate table
-            response.sendRedirect("HostTable");
+            response.sendRedirect("HostTableJSP");
         }
     }
 

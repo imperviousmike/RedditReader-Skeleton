@@ -9,7 +9,7 @@
     </welcome-file-list>
     <error-page>
         <exception-type>common.ValidationException</exception-type>
-        <location>/Error.jsp</location>
+        <location>/jsp/Error.jsp</location>
     </error-page>
 
     <session-config>

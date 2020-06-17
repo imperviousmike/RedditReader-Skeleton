@@ -1,8 +1,8 @@
 package view;
 
+import common.FileUtility;
 import common.ValidationException;
-import entity.Account;
-import logic.AccountLogic;
+import entity.Image;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -15,14 +15,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import javax.servlet.annotation.WebServlet;
+import logic.ImageLogic;
 import logic.LogicFactory;
 
 /**
  *
  * @author Shariar (Shawn) Emami
  */
-@WebServlet(name = "AccountTableJSP", urlPatterns = {"/AccountTableJSP"})
-public class AccountTableViewJSP extends HttpServlet {
+@WebServlet(name = "ImageTableJSP", urlPatterns = {"/ImageTableJSP"})
+public class ImageTableViewJSP extends HttpServlet {
 
     private void fillTableData(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -36,10 +37,10 @@ public class AccountTableViewJSP extends HttpServlet {
 
     private List<?> extractTableData(HttpServletRequest req) {
         String search = req.getParameter("searchText");
-        AccountLogic logic = LogicFactory.getFor("Account");
+        ImageLogic logic = LogicFactory.getFor("Image");
         req.setAttribute("columnName", logic.getColumnNames());
         req.setAttribute("columnCode", logic.getColumnCodes());
-        List<Account> list;
+        List<Image> list;
         if (search != null) {
             list = logic.search(search);
         } else {
@@ -81,17 +82,20 @@ public class AccountTableViewJSP extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         log("POST");
-        AccountLogic logic = LogicFactory.getFor("Account");
+        ImageLogic logic = LogicFactory.getFor("Image");
         Map<String, String[]> map = req.getParameterMap();
         if (map.containsKey("deleteMark")) {
             for (String delete : map.get("deleteMark")) {
-                logic.delete(logic.getWithId(Integer.valueOf(delete)));
+                Image img = logic.getWithId(Integer.valueOf(delete));
+                if (FileUtility.deleteImageFile(img.getLocalPath())) {
+                    logic.delete(logic.getWithId(Integer.valueOf(delete)));
+                }
             }
         } else if (req.getParameter("edit") != null) {
             //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Account account = logic.createEntity(req.getParameterMap());
+            Image image = logic.createEntity(req.getParameterMap());
             try {
-                logic.update(account);
+                logic.update(image);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
             }

@@ -51,4 +51,10 @@ public class BoardDAL extends GenericDAL<Board> {
         return findResults("Board.findByName", map);
     }
 
+    public List<Board> findContaining(String search) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("search", search);
+        return findResults("Board.findContaining", map);
+    }
+
 }

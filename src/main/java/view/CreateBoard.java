@@ -150,7 +150,7 @@ public class CreateBoard extends HttpServlet {
             processRequest(request, response);
         } else if (request.getParameter("view") != null) {
             //if view button is pressed redirect to the appropriate table
-            response.sendRedirect("BoardTable");
+            response.sendRedirect("BoardTableJSP");
         }
     }
 

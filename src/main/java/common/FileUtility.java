@@ -37,6 +37,17 @@ public final class FileUtility {
         }
     }
 
+    public static boolean deleteImageFile(String path) {
+        Path imagesPath = Paths.get(path);
+        try {
+            Files.delete(imagesPath);
+
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * get the name of a file from URL. look for last instance of / or \ and
      * remove everything before it including / or \. IMPORTANT - only useful if
@@ -76,7 +87,7 @@ public final class FileUtility {
             if (name == null || name.isEmpty()) {
                 name = urlObj.getFile();
             }
-            if(name.contains("?")){
+            if (name.contains("?")) {
                 name = name.substring(0, name.indexOf("?"));
             }
             File file = new File(dest, name);

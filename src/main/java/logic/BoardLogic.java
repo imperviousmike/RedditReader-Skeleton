@@ -61,8 +61,13 @@ public class BoardLogic extends GenericLogic<Board, BoardDAL> {
     }
 
     @Override
+    public List<Board> search(String search) {
+        return get(() -> dal().findContaining(search));
+    }
+
+    @Override
     public Board createEntity(Map<String, String[]> parameterMap) {
-        
+
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
         Board entity = new Board();
 

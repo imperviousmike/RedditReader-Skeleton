@@ -32,7 +32,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Image.findByUrl", query = "SELECT i FROM Image i join fetch i.board WHERE i.url = :url"),
     @NamedQuery(name = "Image.findByLocalPath", query = "SELECT i FROM Image i join fetch i.board WHERE i.localPath = :localPath"),
     @NamedQuery(name = "Image.findByBoardId", query = "SELECT i FROM Image i join fetch i.board WHERE i.board = :boardid"),
-    @NamedQuery(name = "Image.findByDate", query = "SELECT i FROM Image i join fetch i.board WHERE i.date = :date")})
+    @NamedQuery(name = "Image.findByDate", query = "SELECT i FROM Image i join fetch i.board WHERE i.date = :date"),
+    @NamedQuery(name = "Image.findContaining", query = "SELECT i FROM Image i WHERE i.title like CONCAT('%', :search, '%') or i.localPath like CONCAT('%', :search, '%')")})
 //by using fetch we grab the needed dependency when getting a new object.
 public class Image implements Serializable {
 
@@ -156,5 +157,5 @@ public class Image implements Serializable {
     public String toString() {
         return "entity.Image[ id=" + id + " ]";
     }
-    
+
 }
