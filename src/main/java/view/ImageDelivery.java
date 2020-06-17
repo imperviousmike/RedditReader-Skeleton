@@ -85,7 +85,7 @@ public class ImageDelivery extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Imaage Delivery servlet";
+        return "Image Delivery servlet";
     }
 
 }

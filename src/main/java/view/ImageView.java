@@ -64,13 +64,14 @@ public class ImageView extends HttpServlet {
             out.println("<caption>Images</caption>");
             ImageLogic logic = LogicFactory.getFor("Image");
             List<Image> imageList = logic.getAll();
+            
+            out.println("<div align=\"center\" class=\"imageContainer\">");
             for (Image i : imageList) {
-                out.println("<div align=\"center\">");
-                out.println("<div align=\"center\" class=\"imageContainer\">");
-                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath()));
-                out.println("</div>");
-                out.println("</div>");
+                out.printf("<a href=\"%s\">", "image/" + FileUtility.getFileName(i.getLocalPath()));
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath())); 
+                out.println("</a>");
             }
+            out.println("</div>");
             out.printf("<div style=\"text-align: center;\"><pre>%s</pre></div>", toStringMap(request.getParameterMap()));
             out.println("</body>");
             out.println("</html>");
