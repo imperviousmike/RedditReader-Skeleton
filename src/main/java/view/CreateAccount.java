@@ -38,24 +38,29 @@ public class CreateAccount extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/login.css\" />");
             out.println("<title>Create Account</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<div style=\"text-align: center;\">");
-            out.println("<div style=\"display: inline-block; text-align: left;\">");
+            out.println("<div class=\"login-div\" >");              
+            out.println("<div style=\"display: inline-block; text-align: center;\">");
+            out.println("<h2>Create an Account</h2>");
             out.println("<form method=\"post\">");
-            out.println("Nickname:<br>");
+            //out.println("Nickname:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",AccountLogic.NICKNAME);
+            out.println("<div class=\"fields\">");
+            out.printf("<div class=\"nickname\"><input type=\"text\" name=\"%s\" class=\"nicknameinput\" placeholder=\"nickname\" value=\"\"></div>",AccountLogic.NICKNAME);
             out.println("<br>");
-            out.println("User:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>",AccountLogic.USERNAME);
+            //out.println("User:<br>");
+            out.printf("<div class=\"username\"><input type=\"text\" name=\"%s\" class=\"userinput\" placeholder=\"user\" value=\"\"></div>",AccountLogic.USERNAME);
             out.println("<br>");
-            out.println("Password:<br>");
-            out.printf("<input type=\"password\" name=\"%s\" value=\"\"><br>",AccountLogic.PASSWORD);
-            out.println("<br>");
+            //out.println("Password:<br>");
+            out.printf("<div class=\"password\"><input type=\"password\" name=\"%s\" class=\"passwordinput\" placeholder=\"password\" value=\"\"></div>",AccountLogic.PASSWORD);
+            out.println("<br><br>");
+            out.println("</div>");
+
             out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
             out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
             out.println("</form>");

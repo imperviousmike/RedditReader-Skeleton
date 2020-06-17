@@ -163,6 +163,6 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
 
     @Override
     public List extractDataAsList(Image e) {
-        return Arrays.asList(e.getId(), e.getUrl(), e.getTitle(), e.getDate(), e.getLocalPath(), e.getBoard());
+        return Arrays.asList(e.getId(), e.getUrl(), e.getTitle(), e.getDate(), e.getLocalPath(), e.getBoard().getId());
     }
 }

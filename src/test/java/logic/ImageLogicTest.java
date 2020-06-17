@@ -340,7 +340,7 @@ public class ImageLogicTest {
         assertEquals(expectedImage.getTitle(), list.get(2));
         assertEquals(expectedImage.getDate(), list.get(3));
         assertEquals(expectedImage.getLocalPath(), list.get(4));
-        Board board = (Board) list.get(5);
+        Board board = (Board) list.get(5);  //test fails here
         assertEquals(expectedImage.getBoard().getId(), board.getId());
 
     }
