@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.ObjIntConsumer;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -97,6 +97,26 @@ public class AccountLogic extends GenericLogic<Account, AccountDAL> {
             }
         }
         return entity;
+    }
+
+    @Override
+    public Account updateEntity(Map<String, String[]> parameterMap) {
+        Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
+        Account entity = createEntity(parameterMap);
+        if (findDuplicate(entity)) {
+            throw new ValidationException("Duplicate found, cannot update");
+        }
+        return entity;
+    }
+
+    private boolean findDuplicate(Account entity) {
+        List<Account> accounts = getAll();
+        accounts.remove(getWithId(entity.getId()));
+        List duplicateEntries = accounts.stream()
+                .filter(e -> e.getId().equals(entity.getId()))
+                .filter(e -> e.getUsername().equals(entity.getUsername()))
+                .collect(Collectors.toList());
+        return !duplicateEntries.isEmpty();
     }
 
     /**

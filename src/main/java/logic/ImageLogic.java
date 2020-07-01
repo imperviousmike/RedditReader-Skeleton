@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -119,42 +120,22 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
 
     public Image updateEntity(Map<String, String[]> parameterMap) {
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
-        Image entity = getWithId(Integer.parseInt(parameterMap.get(ID)[0]));
-        for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
-            try {
-                switch (map.getKey()) {
-                    case ID:
-                        entity.setId(Integer.parseInt(parameterMap.get(ID)[0]));
-                        break;
-                    case URL:
-                        String url = parameterMap.get(URL)[0];
-                        ValidationUtil.validateString(url, 255);
-                        entity.setUrl(URL);
-                        break;
-                    case TITLE:
-                        String title = parameterMap.get(TITLE)[0];
-                        ValidationUtil.validateString(title, 1000);
-                        entity.setTitle(title);
-                        break;
-                    case DATE:
-                        entity.setDate(FORMATTER.parse(parameterMap.get(DATE)[0]));
-                        break;
-                    case LOCAL_PATH:
-                        String path = parameterMap.get(LOCAL_PATH)[0];
-                        ValidationUtil.validateString(path, 255);
-                        entity.setLocalPath(path);
-                        break;
-                    case BOARD_ID:
-                        entity.setBoard(new Board(Integer.parseInt(parameterMap.get(BOARD_ID)[0])));
-                        break;
-                    default:
-                        break;
-                }
-            } catch (Exception ex) {
-                throw new ValidationException(ex);
-            }
+        Image entity = createEntity(parameterMap);
+        if (findDuplicate(entity)) {
+            throw new ValidationException("Duplicate found, cannot update");
         }
         return entity;
+    }
+
+    private boolean findDuplicate(Image entity) {
+        List<Image> images = getAll();
+        images.remove(getWithId(entity.getId()));
+        List duplicateEntries = images.stream()
+                .filter(e -> e.getId().equals(entity.getId()))
+                .filter(e -> e.getUrl().equals(entity.getUrl()))
+                .filter(e -> e.getLocalPath().equals(entity.getLocalPath()))
+                .collect(Collectors.toList());
+        return !duplicateEntries.isEmpty();
     }
 
     @Override

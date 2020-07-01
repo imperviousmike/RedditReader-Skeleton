@@ -92,9 +92,12 @@ public class ImageTableViewJSP extends HttpServlet {
                 }
             }
         } else if (req.getParameter("edit") != null) {
-            //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Image image = logic.createEntity(req.getParameterMap());
+            Image image = logic.updateEntity(req.getParameterMap());
             try {
+                Image oldImage = logic.getImageWithLocalPath(image.getLocalPath());
+                if (oldImage != null) {
+                    logic.delete(oldImage);
+                }
                 logic.update(image);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
@@ -158,7 +161,7 @@ public class ImageTableViewJSP extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Smaple of Account Table using JSP";
+        return "Image Table JSP";
     }
 
     private static final boolean DEBUG = true;
@@ -168,10 +171,5 @@ public class ImageTableViewJSP extends HttpServlet {
             String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
             getServletContext().log(message);
         }
-    }
-
-    public void log(String msg, Throwable t) {
-        String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
-        getServletContext().log(message, t);
     }
 }

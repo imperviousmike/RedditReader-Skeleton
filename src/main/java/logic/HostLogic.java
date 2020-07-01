@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -99,6 +100,27 @@ public class HostLogic extends GenericLogic<Host, HostDAL> {
         }
 
         return entity;
+    }
+
+    @Override
+    public Host updateEntity(Map<String, String[]> parameterMap) {
+        Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
+        Host entity = createEntity(parameterMap);
+        if (findDuplicate(entity)) {
+            throw new ValidationException("Duplicate found, cannot update");
+        }
+        return entity;
+    }
+
+    private boolean findDuplicate(Host entity) {
+        List<Host> hosts = getAll();
+        hosts.remove(getWithId(entity.getId()));
+        List duplicateEntries = hosts.stream()
+                .filter(e -> e.getId().equals(entity.getId()))
+                .filter(e -> e.getName().equals(entity.getName()))
+                .filter(e -> e.getUrl().equals(entity.getUrl()))
+                .collect(Collectors.toList());
+        return !duplicateEntries.isEmpty();
     }
 
     /**
