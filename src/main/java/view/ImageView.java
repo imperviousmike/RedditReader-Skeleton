@@ -68,24 +68,30 @@ public class ImageView extends HttpServlet {
             out.printf("<select name=\"%s\">", "BoardSelect", board_name);
             BoardLogic bLogic = LogicFactory.getFor("Board");
             List<Board> bList = bLogic.getAll();
+            Board board = null;
             for (Board b : bList) {
                 if (b.getName().equals(board_name)) {
                     out.printf("<option value=\"%s\" selected>%s</option>", b.getName(), b.getName());
+                    board = b;
                 } else {
                     out.printf("<option value=\"%s\">%s</option>", b.getName(), b.getName());
                 }
             }
             out.printf("</select>");
-            out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
+            out.println("<input type=\"submit\" name=\"view\" value=\"View\">");
             out.println("</div>");
             ImageLogic logic = LogicFactory.getFor("Image");
             out.println("</form>");
-            List<Image> imageList = logic.getAll();
-            
+            List<Image> imageList = null;
+            if (board == null) {
+                imageList = logic.getAll();
+            } else {
+                imageList = logic.getImagesWithBoardId(board.getId());
+            }
             out.println("<div align=\"center\" class=\"imageContainer\">");
             for (Image i : imageList) {
                 out.printf("<a href=\"%s\">", "image/" + FileUtility.getFileName(i.getLocalPath()));
-                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath())); 
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath()));
                 out.println("</a>");
             }
             out.println("</div>");
@@ -119,8 +125,6 @@ public class ImageView extends HttpServlet {
             throws ServletException, IOException {
 
         log("GET");
-        processRequest(request, response);
-
         FileUtility.createDirectory(SAVE_DIR);
 
         ImageLogic imageLogic = LogicFactory.getFor("Image");
@@ -171,6 +175,8 @@ public class ImageView extends HttpServlet {
         //get the next page 3 times and save the images.
         scrap.requestNextPage()
                 .proccessNextPage(saveImage);
+
+        processRequest(request, response);
     }
 
     /**
@@ -187,7 +193,7 @@ public class ImageView extends HttpServlet {
             throws ServletException, IOException {
         log("POST");
 
-        if (request.getParameter("add") != null) {
+        if (request.getParameter("view") != null) {
             board_name = request.getParameter("BoardSelect");
         }
         doGet(request, response);
@@ -221,5 +227,9 @@ public class ImageView extends HttpServlet {
         inputMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
         inputMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(board.getId())});
         return logic.createEntity(inputMap);
+    }
+
+    public static String getSelectedBoard() {
+        return board_name;
     }
 }
