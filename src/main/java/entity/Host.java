@@ -135,7 +135,7 @@ public class Host implements Serializable {
     //changed from return "entity.Host[ id=" + id + " ]"; because it looked really bad in the table
     @Override
     public String toString() {
-        return "" + id;
+        return Integer.toString(id);
     }
     
 }
