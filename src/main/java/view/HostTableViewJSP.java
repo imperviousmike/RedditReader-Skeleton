@@ -88,9 +88,12 @@ public class HostTableViewJSP extends HttpServlet {
                 logic.delete(logic.getWithId(Integer.valueOf(delete)));
             }
         } else if (req.getParameter("edit") != null) {
-            //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Host host = logic.createEntity(req.getParameterMap());
+            Host host = logic.updateEntity(req.getParameterMap());
             try {
+                Host oldHost = logic.getHostWithName(host.getName());
+                if (oldHost != null) {
+                    logic.delete(oldHost);
+                }
                 logic.update(host);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
@@ -154,7 +157,7 @@ public class HostTableViewJSP extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Smaple of Account Table using JSP";
+        return "Host Table using JSP";
     }
 
     private static final boolean DEBUG = true;
@@ -166,8 +169,4 @@ public class HostTableViewJSP extends HttpServlet {
         }
     }
 
-    public void log(String msg, Throwable t) {
-        String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
-        getServletContext().log(message, t);
-    }
 }

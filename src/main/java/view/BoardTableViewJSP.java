@@ -88,9 +88,12 @@ public class BoardTableViewJSP extends HttpServlet {
                 logic.delete(logic.getWithId(Integer.valueOf(delete)));
             }
         } else if (req.getParameter("edit") != null) {
-            //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Board board = logic.createEntity(req.getParameterMap());
+            Board board = logic.updateEntity(req.getParameterMap());
             try {
+                Board oldBoard = logic.getBoardWithUrl(board.getUrl());
+                if (oldBoard != null) {
+                    logic.delete(oldBoard);
+                }
                 logic.update(board);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
@@ -154,7 +157,7 @@ public class BoardTableViewJSP extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Smaple of Account Table using JSP";
+        return "Board Table using JSP";
     }
 
     private static final boolean DEBUG = true;
@@ -166,8 +169,4 @@ public class BoardTableViewJSP extends HttpServlet {
         }
     }
 
-    public void log(String msg, Throwable t) {
-        String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
-        getServletContext().log(message, t);
-    }
 }
