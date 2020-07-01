@@ -47,27 +47,31 @@ public class CreateHost extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Create Board</title>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/login.css\" />");
+            out.println("<title>Create Host</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<div style=\"text-align: center;\">");
-            out.println("<div style=\"display: inline-block; text-align: left;\">");
+            out.println("<div class=\"login-div\" >");              
+            out.println("<div style=\"display: inline-block; text-align: center;\">");
+            out.println("<h2>Create a Host</h2>");
+            
             out.println("<form method=\"post\">");
-            out.println("Url:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", HostLogic.NAME);
+            out.println("<div class=\"fields\">");
+            out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" class=\"hostnametext\" placeholder=\"Enter host name\" value=\"\"></div>", HostLogic.NAME);
+            out.printf("<div class=\"boardurl\"><input type=\"text\" name=\"%s\" class=\"hosturltext\" placeholder=\"Enter host URL\" value=\"\"></div>", HostLogic.URL);
             out.println("<br>");
-            out.println("Name:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", HostLogic.URL);
-            out.println("<br>");
+            out.println("</div>");
             out.printf("<label for=\"%s\">%s</label>", HostLogic.EXTRACTION_TYPE, "Host:&emsp;");
             out.printf("<select name=\"%s\">", HostLogic.EXTRACTION_TYPE);
+            
             List<String> list = Arrays.asList("html", "json", "xml");
             for (String s : list) {
                 out.printf("<option value=\"%s\">%s</option>", s, s);
             }
+            
             out.printf("</select>");
             out.println("<br>");
             out.println("<br>");

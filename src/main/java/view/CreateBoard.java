@@ -48,21 +48,22 @@ public class CreateBoard extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/login.css\" />");
             out.println("<title>Create Board</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<div style=\"text-align: center;\">");
-            out.println("<div style=\"display: inline-block; text-align: left;\">");
+            out.println("<div class=\"login-div\" >");              
+            out.println("<div style=\"display: inline-block; text-align: center;\">");
+            out.println("<h2>Create a Board</h2>");
             out.println("<form method=\"post\">");
-            out.println("Url:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", BoardLogic.URL);
+            out.println("<div class=\"fields\">");
+            out.printf("<div class=\"boardurl\"><input type=\"text\" name=\"%s\" class=\"urlinput\" placeholder=\"Enter board URL\" value=\"\"></div>", BoardLogic.URL);
+            out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" class=\"bnameinput\" placeholder=\"Enter board name\" value=\"\"></div>", BoardLogic.NAME);
             out.println("<br>");
-            out.println("Name:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", BoardLogic.NAME);
-            out.println("<br>");
+            out.println("</div>");
             out.printf("<label for=\"%s\">%s</label>", BoardLogic.HOST_ID, "Host:&emsp;");
             out.printf("<select name=\"%s\">", BoardLogic.HOST_ID);
             List<Host> hList = hLogic.getAll();

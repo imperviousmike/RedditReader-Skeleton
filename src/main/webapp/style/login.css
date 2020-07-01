@@ -40,7 +40,9 @@ body {
     padding: 10px 10px 10px 5px;
 }
 
-.username, .nickname, .password {
+.username, .nickname, .password, 
+.boardurl, .boardname, 
+.hostname, .hosturl {
     margin-bottom: 10px;
     border-radius: 15px;
     box-shadow: inset 8px 8px 8px #cbced1;
