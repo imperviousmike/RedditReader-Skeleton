@@ -62,21 +62,21 @@ public class CreateHost extends HttpServlet {
             out.println("<div class=\"fields\">");
             out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" class=\"hostnametext\" placeholder=\"Enter host name\" value=\"\"></div>", HostLogic.NAME);
             out.printf("<div class=\"boardurl\"><input type=\"text\" name=\"%s\" class=\"hosturltext\" placeholder=\"Enter host URL\" value=\"\"></div>", HostLogic.URL);
-            out.println("<br>");
-            out.println("</div>");
-            out.printf("<label for=\"%s\">%s</label>", HostLogic.EXTRACTION_TYPE, "Host:&emsp;");
-            out.printf("<select name=\"%s\">", HostLogic.EXTRACTION_TYPE);
-            
+            //out.printf("<label for=\"%s\">%s</label>", HostLogic.EXTRACTION_TYPE, "Host:&emsp;");
+            out.printf("<select class=\"select-css\" name=\"%s\">", HostLogic.EXTRACTION_TYPE);
+            out.println("<option value=\"\" selected>Select a host</option>");
             List<String> list = Arrays.asList("html", "json", "xml");
             for (String s : list) {
                 out.printf("<option value=\"%s\">%s</option>", s, s);
             }
             
             out.printf("</select>");
+            out.println("</div>");
+
             out.println("<br>");
             out.println("<br>");
-            out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
-            out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"view\" value=\"Add and View\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"add\" value=\"Add\">");
             out.println("</form>");
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 out.println("<p color=red>");

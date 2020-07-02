@@ -41,9 +41,8 @@ public class AccountTableView extends HttpServlet {
             out.println("<title>AccountViewNormal</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h2>Account Table</h2>");
-
             out.println("<div class=\"table-div\" >");              
+            out.println("<h2>Account Table</h2>");
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
             out.println("<caption>Account</caption>");
             //this is an example, for your other tables use getColumnNames from
