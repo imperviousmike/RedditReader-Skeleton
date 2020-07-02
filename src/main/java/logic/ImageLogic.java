@@ -127,11 +127,12 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
     }
 
     /**
+     * *
      * This method is used to update an image in the database. It takes a new
-     * set of parameters, validates them using methods from the ValidationUtil
-     * class, and sets them to fields of an existing Image object. If the values
-     * in the parameterMap do not fit the criteria required by the
-     * ValidationUtil methods, then a ValidationException is thrown.
+     * set of parameters, and creates a new Image object. This method calls
+     * findDuplicate() to check if the image is already in List<Image>. If it is
+     * a duplicate, a ValidationException is thrown and the update is denied.
+     * Otherwise, it returns the Image object with the new parameters.
      */
     public Image updateEntity(Map<String, String[]> parameterMap) {
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
@@ -142,11 +143,22 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
         return entity;
     }
 
+    /**
+     * This method takes an Image as a parameter. A List<Image> is created which
+     * contains all Image objects in the database. The Image in the List which
+     * has a matching Id with Image taken as a parameter is removed from the
+     * List, if it is present. Then, a second List is created and used to check
+     * the first List for duplicates, and store the duplicates if they are
+     * present. If the Image taken as a parameter matches an Image in the first
+     * List in its Id, Url, and LocalPath, it is added to the List of
+     * duplicates. If the list of duplicates is not empty, this method returns
+     * true, which indicates the Image taken as a parameter already exists in
+     * the database.
+     */
     private boolean findDuplicate(Image entity) {
         List<Image> images = getAll();
         images.remove(getWithId(entity.getId()));
-        List duplicateEntries = images.stream()
-                .filter(e -> e.getId().equals(entity.getId()))
+        List duplicateEntries = images.stream().filter(e -> e.getId().equals(entity.getId()))
                 .filter(e -> e.getUrl().equals(entity.getUrl()))
                 .filter(e -> e.getLocalPath().equals(entity.getLocalPath()))
                 .collect(Collectors.toList());

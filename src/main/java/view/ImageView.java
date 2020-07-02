@@ -219,6 +219,13 @@ public class ImageView extends HttpServlet {
         }
     }
 
+    /**
+     * This method creates a new Image object by retrieving the Url, date,
+     * local_path, title, and board_id from a Post taken as a parameter, using
+     * an ImageLogic object, and setting those parameters to a new HashMap
+     * object. Returns an Image object with it's properties set to the values
+     * contained in the HashMap.
+     */
     private Image createImageEntity(ImageLogic logic, Post post) {
         Map<String, String[]> inputMap = new HashMap<>();
         inputMap.put(ImageLogic.URL, new String[]{post.getUrl()});
