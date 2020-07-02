@@ -59,7 +59,7 @@ public class HostTableView extends HttpServlet {
                         logic.extractDataAsList(host).toArray());
             }
 
-            //making headers again for the bottom of the table I guess?
+            //making headers again for the bottom of the table
             out.println("<tr>");
             for (String columnName : logic.getColumnNames()) {
                 out.println("<th>" + columnName + "</th>");

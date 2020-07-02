@@ -65,7 +65,7 @@ public class ImageLogicTest {
 
         EntityManager em = EMFactory.getEMF().createEntityManager();
         em.getTransaction().begin();
-        expectedImage = em.merge(image);
+        expectedImage = em.merge(image); //fails here, causing every other test to fail
         em.getTransaction().commit();
         em.close();
 

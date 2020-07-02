@@ -61,7 +61,7 @@ public class BoardTableView extends HttpServlet {
                         logic.extractDataAsList(board).toArray());
             }
             
-            //making headers again for the bottom of the table?
+            //making headers again for the bottom of the table
             out.println("<tr>");
             for (String columnName : logic.getColumnNames()){
                 out.println("<th>" + columnName + "</th>");

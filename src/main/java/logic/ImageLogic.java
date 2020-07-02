@@ -23,6 +23,14 @@ import java.util.Objects;
  */
 public class ImageLogic extends GenericLogic<Image, ImageDAL> {
 
+    /**
+     * create static final variables with proper name of each column. this way
+     * you will never manually type it again, instead always refer to these
+     * variables.
+     *
+     * by using the same name as column id and HTML element names we can make
+     * our code simpler. this is not recommended for proper production project.
+     */
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     public static final String ID = "id";
     public static final String URL = "url";
@@ -117,6 +125,13 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
         return entity;
     }
 
+    /**
+     * This method is used to update an image in the database. It takes a new
+     * set of parameters, validates them using methods from the ValidationUtil
+     * class, and sets them to fields of an existing Image object. If the values
+     * in the parameterMap do not fit the criteria required by the
+     * ValidationUtil methods, then a ValidationException is thrown.
+     */
     public Image updateEntity(Map<String, String[]> parameterMap) {
         Objects.requireNonNull(parameterMap, "parameterMap cannot be null");
         Image entity = getWithId(Integer.parseInt(parameterMap.get(ID)[0]));
@@ -157,15 +172,44 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
         return entity;
     }
 
+    /**
+     * this method is used to send a list of all names to be used form table
+     * column headers. by having all names in one location there is less chance
+     * of mistakes.
+     *
+     * this list must be in the same order as getColumnCodes and
+     * extractDataAsList
+     *
+     * @return list of all column names to be displayed.
+     */
     @Override
     public List<String> getColumnNames() {
         return Arrays.asList("ID", "URL", "Title", "Date", "LocalPath", "BoardID");
     }
 
+    /**
+     * this method returns a list of column names that match the official column
+     * names in the db. by having all names in one location there is less chance
+     * of mistakes.
+     *
+     * this list must be in the same order as getColumnNames and
+     * extractDataAsList
+     *
+     * @return list of all column names in DB.
+     */
     public List<String> getColumnCodes() {
         return Arrays.asList(ID, URL, TITLE, DATE, LOCAL_PATH, BOARD_ID);
     }
 
+    /**
+     * return the list of values of all columns (variables) in given entity.
+     *
+     * this list must be in the same order as getColumnNames and getColumnCodes
+     *
+     * @param e - given Entity to extract data from.
+     *
+     * @return list of extracted values
+     */
     @Override
     public List extractDataAsList(Image e) {
         return Arrays.asList(e.getId(), e.getUrl(), e.getTitle(), e.getDate(), e.getLocalPath(), e.getBoard().getId());

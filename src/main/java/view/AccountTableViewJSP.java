@@ -154,7 +154,7 @@ public class AccountTableViewJSP extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Smaple of Account Table using JSP";
+        return "Sample of Account Table using JSP";
     }
 
     private static final boolean DEBUG = true;
