@@ -142,18 +142,6 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
         return entity;
     }
 
-<<<<<<< HEAD
-    /**
-     * this method is used to send a list of all names to be used form table
-     * column headers. by having all names in one location there is less chance
-     * of mistakes.
-     *
-     * this list must be in the same order as getColumnCodes and
-     * extractDataAsList
-     *
-     * @return list of all column names to be displayed.
-     */
-=======
     private boolean findDuplicate(Image entity) {
         List<Image> images = getAll();
         images.remove(getWithId(entity.getId()));
@@ -165,8 +153,18 @@ public class ImageLogic extends GenericLogic<Image, ImageDAL> {
         return !duplicateEntries.isEmpty();
     }
 
->>>>>>> 920b9bb70d2223c0239db70a11256938d76aca2f
+    /**
+     * this method is used to send a list of all names to be used form table
+     * column headers. by having all names in one location there is less chance
+     * of mistakes.
+     *
+     * this list must be in the same order as getColumnCodes and
+     * extractDataAsList
+     *
+     * @return list of all column names to be displayed.
+     */
     @Override
+
     public List<String> getColumnNames() {
         return Arrays.asList("ID", "URL", "Title", "Date", "LocalPath", "BoardID");
     }
