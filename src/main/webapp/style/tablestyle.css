@@ -1,27 +1,23 @@
 body {
     margin:0;
-    height: 100vh;
-    width: 100vw;
-    padding-top: 20px;
-    overflow: hidden;
+    width: 100%;
+    padding: 20px 0px 20px;
     font-family: 'sans-serif';
     font-weight: 700;
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
     color: #555;
 }
 
-.table-div {
-    box-sizing: border-box;
-    text-align: center;
-    width:430px;
-    height:600px;
-    padding: 60px 35px 35px 35px;
-    border-radius: 40px;
-    background-color: #ecf0f3;
-    box-shadow: 13px 13px 20px 0px #cbced1;
-    box-shadow: -13px, -13px 20px 0px #ffffff;
+th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: bold;
+  background-color: lightblue;
+  
 }
 
 table {
@@ -31,7 +27,7 @@ table {
     margin-right: auto;
 }
 
-th,
+
 td {
     text-align: left;
     padding: 8px;
@@ -40,7 +36,7 @@ td.edit{
     width:65px;
 }
 td.name{
-    width:150px;
+    width:100px;
 }
 td.delete{
     text-align: center;
@@ -51,6 +47,9 @@ input.editor{
 input.update{
     width: 100%;
 }
+
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
+tr:hover {background-color: #ddd;}

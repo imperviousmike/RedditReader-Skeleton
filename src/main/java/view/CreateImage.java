@@ -50,38 +50,38 @@ public class CreateImage extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/login.css\" />");
             out.println("<title>Create Image</title>");
             out.println("</head>");
             out.println("<body>");
+            out.println("<div class=\"login-div\" >");              
             out.println("<div style=\"text-align: center;\">");
-            out.println("<div style=\"display: inline-block; text-align: left;\">");
+            out.println("<div style=\"display: inline-block; text-align: center;\">");
+            out.println("<h2>Create an Image</h2>");
             out.println("<form method=\"post\">");
-            out.println("Url:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", ImageLogic.URL);
-            out.println("<br>");
-            out.println("Title:<br>");
-            out.printf("<input type=\"text\" name=\"%s\" value=\"\"><br>", ImageLogic.TITLE);
-            out.println("<br>");
-            out.println("Local Path:<br>");
-            out.printf("<input type=\"file\" accept=\"image/png, image/jpeg\" name=\"%s\" value=\"%s\"><br>", ImageLogic.LOCAL_PATH, SAVE_DIR + "");
-            out.println("<br>");
-            out.printf("<label for=\"%s\">%s</label>", ImageLogic.BOARD_ID, "Board:&emsp;");
-            out.printf("<select name=\"%s\">", ImageLogic.BOARD_ID);
+            out.println("<div class=\"fields\">");
+            out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" value=\"\" placeholder=\"Enter URL\"></div>", ImageLogic.URL);
+            out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" value=\"\" placeholder=\"Enter Title\"></div>", ImageLogic.TITLE);
+            out.printf("<div class=\"boardname\"><input type=\"file\" accept=\"image/png, image/jpeg\" name=\"%s\" value=\"%s\"></div>", ImageLogic.LOCAL_PATH, SAVE_DIR + "");
+            out.printf("<select class=\"select-css\" name=\"%s\" required>", ImageLogic.BOARD_ID);
+            out.println("<option value=\"\" selected>Select a board</option>");
+            
             List<Board> bList = bLogic.getAll();
             bList.forEach(board -> out.printf("<option value=\"%d\">%s</option>", board.getId(), board.getName()));
             out.printf("</select>");
             out.println("<br>");
             ImageLogic iLogic = LogicFactory.getFor("Image");
             String date = iLogic.convertDate(Calendar.getInstance().getTime());
-            out.println("Date:<br>");
+            
+            out.println("<br>Date and time:");
             out.printf("<input type=\"text\" name=\"%s\" value=\"%s\" readonly><br>", ImageLogic.DATE, date);
+            out.println("</div>");
             out.println("<br>");
-            out.println("<br>");
-            out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
-            out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"view\" value=\"Add and View\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"add\" value=\"Add\">");
             out.println("</form>");
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 out.println("<p color=red>");

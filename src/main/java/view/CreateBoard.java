@@ -62,19 +62,17 @@ public class CreateBoard extends HttpServlet {
             out.println("<div class=\"fields\">");
             out.printf("<div class=\"boardurl\"><input type=\"text\" name=\"%s\" class=\"urlinput\" placeholder=\"Enter board URL\" value=\"\"></div>", BoardLogic.URL);
             out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" class=\"bnameinput\" placeholder=\"Enter board name\" value=\"\"></div>", BoardLogic.NAME);
-            out.println("<br>");
-            out.println("</div>");
-            out.printf("<label for=\"%s\">%s</label>", BoardLogic.HOST_ID, "Host:&emsp;");
-            out.printf("<select name=\"%s\">", BoardLogic.HOST_ID);
+            out.printf("<select class=\"select-css\" name=\"%s\" placeholder\"Select Host\" required>", BoardLogic.HOST_ID);
+            out.println("<option value=\"\" selected>Select a host</option>");
             List<Host> hList = hLogic.getAll();
             for (Host h : hList) {
                 out.printf("<option value=\"%d\">%s</option>", h.getId(), h.getName());
             }
-            out.printf("</select>");
-            out.println("<br>");
-            out.println("<br>");
-            out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
-            out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
+            out.printf("</select></div>");
+       
+            out.println("<br><br>");
+            out.println("<input type=\"submit\" class=\"button\" name=\"view\" value=\"Add and View\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"add\" value=\"Add\">");
             out.println("</form>");
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 out.println("<p color=red>");

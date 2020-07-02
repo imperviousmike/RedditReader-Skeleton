@@ -53,11 +53,10 @@ public class CreateAccount extends HttpServlet {
             out.printf("<div class=\"nickname\"><input type=\"text\" name=\"%s\" class=\"nicknameinput\" placeholder=\"nickname\" value=\"\"></div>", AccountLogic.NICKNAME);
             out.printf("<div class=\"username\"><input type=\"text\" name=\"%s\" class=\"userinput\" placeholder=\"user\" value=\"\"></div>", AccountLogic.USERNAME);
             out.printf("<div class=\"password\"><input type=\"password\" name=\"%s\" class=\"passwordinput\" placeholder=\"password\" value=\"\"></div>", AccountLogic.PASSWORD);
-            out.println("<br><br>");
             out.println("</div>");
-
-            out.println("<input type=\"submit\" name=\"view\" value=\"Add and View\">");
-            out.println("<input type=\"submit\" name=\"add\" value=\"Add\">");
+            out.println("<br>");
+            out.println("<input type=\"submit\" class=\"button\" name=\"view\" value=\"Add and View\">");
+            out.println("<input type=\"submit\" class=\"button\" name=\"add\" value=\"Add\">");
             out.println("</form>");
             if(errorMessage!=null&&!errorMessage.isEmpty()){
                 out.println("<p color=red>");

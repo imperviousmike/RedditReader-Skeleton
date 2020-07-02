@@ -47,7 +47,7 @@ public class ImageTableView extends HttpServlet {
             out.println("<title>ImageViewNormal</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
+            //out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
             out.println("<caption>Images</caption>");
 
             ImageLogic logic = LogicFactory.getFor("Image");
