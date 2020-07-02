@@ -68,7 +68,7 @@ public class ImageView extends HttpServlet {
             out.printf("<select name=\"%s\">", "BoardSelect", board_name);
             BoardLogic bLogic = LogicFactory.getFor("Board");
             List<Board> bList = bLogic.getAll();
-            Board board = null;
+
             for (Board b : bList) {
                 if (b.getName().equals(board_name)) {
                     out.printf("<option value=\"%s\" selected>%s</option>", b.getName(), b.getName());
@@ -143,7 +143,7 @@ public class ImageView extends HttpServlet {
                 String path = post.getUrl();
                 List<Image> imageList;
                 try {
-                    imageList = imageLogic.getImagesWithBoardId(board.getId());
+                    imageList = imageLogic.getAll();
                 } catch (NullPointerException e) {
                     imageList = new ArrayList<>();
                 }
@@ -154,7 +154,7 @@ public class ImageView extends HttpServlet {
                     FileUtility.downloadAndSaveFile(path, SAVE_DIR);
                 } else {
                     for (Image i : imageList) {
-                        if (i.getUrl().equals(post.getUrl())) {
+                        if (i.getUrl().equals(post.getUrl()) || i.getLocalPath().equals(SAVE_DIR + FileUtility.getFileName(post.getUrl()))) {
                             exists = true;
                         }
                     }
