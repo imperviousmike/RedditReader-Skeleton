@@ -41,7 +41,9 @@ public class AccountTableView extends HttpServlet {
             out.println("<title>AccountViewNormal</title>");
             out.println("</head>");
             out.println("<body>");
+            out.println("<h2>Account Table</h2>");
 
+            out.println("<div class=\"table-div\" >");              
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
             out.println("<caption>Account</caption>");
             //this is an example, for your other tables use getColumnNames from
@@ -72,6 +74,7 @@ public class AccountTableView extends HttpServlet {
             out.println("</tr>");
             out.println("</table>");
             out.printf("<div style=\"text-align: center;\"><pre>%s</pre></div>", toStringMap(request.getParameterMap()));
+            out.println("</div>");
             out.println("</body>");
             out.println("</html>");
         }

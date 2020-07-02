@@ -121,7 +121,7 @@ public class Account implements Serializable{
 
     @Override
     public String toString() {
-        return "entity.Account[ id=" + id + " ]";
+        return Integer.toString(id);
     }
     
 }

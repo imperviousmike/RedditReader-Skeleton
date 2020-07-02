@@ -131,7 +131,7 @@ public class Board implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Board[ id=" + id + " ]";
+        return Integer.toString(id);
     }
 
 }

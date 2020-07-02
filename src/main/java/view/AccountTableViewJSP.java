@@ -88,9 +88,12 @@ public class AccountTableViewJSP extends HttpServlet {
                 logic.delete(logic.getWithId(Integer.valueOf(delete)));
             }
         } else if (req.getParameter("edit") != null) {
-            //THIS IS REALLY BAD AND NEEDS AN UPDATE ENTITY
-            Account account = logic.createEntity(req.getParameterMap());
+            Account account = logic.updateEntity(req.getParameterMap());
             try {
+                Account oldAccount = logic.getAccountWithUsername(account.getUsername());
+                if (oldAccount != null) {
+                    logic.delete(oldAccount);
+                }
                 logic.update(account);
             } catch (javax.persistence.RollbackException ex) {
                 throw new ValidationException(ex);
@@ -154,7 +157,11 @@ public class AccountTableViewJSP extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
+<<<<<<< HEAD
         return "Sample of Account Table using JSP";
+=======
+        return "Account Table using JSP";
+>>>>>>> 920b9bb70d2223c0239db70a11256938d76aca2f
     }
 
     private static final boolean DEBUG = true;
@@ -164,10 +171,5 @@ public class AccountTableViewJSP extends HttpServlet {
             String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
             getServletContext().log(message);
         }
-    }
-
-    public void log(String msg, Throwable t) {
-        String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
-        getServletContext().log(message, t);
     }
 }

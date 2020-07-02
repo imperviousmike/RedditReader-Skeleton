@@ -35,7 +35,7 @@ import reddit.Sort;
 @WebServlet(name = "ImageView", urlPatterns = {"/ImageView"})
 public class ImageView extends HttpServlet {
 
-    private static final String BOARD_NAME = "Wallpaper";
+    private static String board_name = "Wallpaper";
     private static final String SAVE_DIR = System.getProperty("user.home") + "\\Documents\\RedditImages\\";
 
     private Board board;
@@ -62,13 +62,36 @@ public class ImageView extends HttpServlet {
             out.println("<body>");
             out.println("<table style=\"margin-left: auto; margin-right: auto;\" border=\"1\">");
             out.println("<caption>Images</caption>");
+            out.println("<div align=\"center\">");
+            out.printf("<label for=\"%s\">%s</label>", "BoardSelect", "Board:&emsp;");
+            out.println("<form method=\"post\">");
+            out.printf("<select name=\"%s\">", "BoardSelect", board_name);
+            BoardLogic bLogic = LogicFactory.getFor("Board");
+            List<Board> bList = bLogic.getAll();
+
+            for (Board b : bList) {
+                if (b.getName().equals(board_name)) {
+                    out.printf("<option value=\"%s\" selected>%s</option>", b.getName(), b.getName());
+                    board = b;
+                } else {
+                    out.printf("<option value=\"%s\">%s</option>", b.getName(), b.getName());
+                }
+            }
+            out.printf("</select>");
+            out.println("<input type=\"submit\" name=\"view\" value=\"View\">");
+            out.println("</div>");
             ImageLogic logic = LogicFactory.getFor("Image");
-            List<Image> imageList = logic.getAll();
-            
+            out.println("</form>");
+            List<Image> imageList = null;
+            if (board == null) {
+                imageList = logic.getAll();
+            } else {
+                imageList = logic.getImagesWithBoardId(board.getId());
+            }
             out.println("<div align=\"center\" class=\"imageContainer\">");
             for (Image i : imageList) {
                 out.printf("<a href=\"%s\">", "image/" + FileUtility.getFileName(i.getLocalPath()));
-                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath())); 
+                out.printf("<img class=\"imageThumb\" src=\"%s\"/>", "image/" + FileUtility.getFileName(i.getLocalPath()));
                 out.println("</a>");
             }
             out.println("</div>");
@@ -102,16 +125,14 @@ public class ImageView extends HttpServlet {
             throws ServletException, IOException {
 
         log("GET");
-        processRequest(request, response);
-
         FileUtility.createDirectory(SAVE_DIR);
 
         ImageLogic imageLogic = LogicFactory.getFor("Image");
         BoardLogic boardLogic = LogicFactory.getFor("Board");
-        List<Board> boardList = boardLogic.getBoardsWithName(BOARD_NAME);
+        List<Board> boardList = boardLogic.getBoardsWithName(board_name);
 
         for (Board b : boardList) {
-            if (b.getName().equals(BOARD_NAME)) {
+            if (b.getName().equals(board_name)) {
                 board = b;
             }
         }
@@ -133,7 +154,7 @@ public class ImageView extends HttpServlet {
                     FileUtility.downloadAndSaveFile(path, SAVE_DIR);
                 } else {
                     for (Image i : imageList) {
-                        if (i.getUrl().equals(post.getUrl())) {
+                        if (i.getUrl().equals(post.getUrl()) || i.getLocalPath().equals(SAVE_DIR + FileUtility.getFileName(post.getUrl()))) {
                             exists = true;
                         }
                     }
@@ -154,6 +175,8 @@ public class ImageView extends HttpServlet {
         //get the next page 3 times and save the images.
         scrap.requestNextPage()
                 .proccessNextPage(saveImage);
+
+        processRequest(request, response);
     }
 
     /**
@@ -169,6 +192,11 @@ public class ImageView extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         log("POST");
+
+        if (request.getParameter("view") != null) {
+            board_name = request.getParameter("BoardSelect");
+        }
+        doGet(request, response);
         processRequest(request, response);
     }
 
@@ -191,11 +219,6 @@ public class ImageView extends HttpServlet {
         }
     }
 
-    public void log(String msg, Throwable t) {
-        String message = String.format("[%s] %s", getClass().getSimpleName(), msg);
-        getServletContext().log(message, t);
-    }
-
     private Image createImageEntity(ImageLogic logic, Post post) {
         Map<String, String[]> inputMap = new HashMap<>();
         inputMap.put(ImageLogic.URL, new String[]{post.getUrl()});
@@ -204,5 +227,9 @@ public class ImageView extends HttpServlet {
         inputMap.put(ImageLogic.TITLE, new String[]{post.getTitle()});
         inputMap.put(ImageLogic.BOARD_ID, new String[]{Integer.toString(board.getId())});
         return logic.createEntity(inputMap);
+    }
+
+    public static String getSelectedBoard() {
+        return board_name;
     }
 }

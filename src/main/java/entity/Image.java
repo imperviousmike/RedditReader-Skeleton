@@ -155,7 +155,7 @@ public class Image implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Image[ id=" + id + " ]";
+        return Integer.toString(id);
     }
 
 }
