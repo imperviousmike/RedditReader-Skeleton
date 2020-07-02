@@ -62,9 +62,8 @@ public class CreateHost extends HttpServlet {
             out.println("<div class=\"fields\">");
             out.printf("<div class=\"boardname\"><input type=\"text\" name=\"%s\" class=\"hostnametext\" placeholder=\"Enter host name\" value=\"\"></div>", HostLogic.NAME);
             out.printf("<div class=\"boardurl\"><input type=\"text\" name=\"%s\" class=\"hosturltext\" placeholder=\"Enter host URL\" value=\"\"></div>", HostLogic.URL);
-            //out.printf("<label for=\"%s\">%s</label>", HostLogic.EXTRACTION_TYPE, "Host:&emsp;");
-            out.printf("<select class=\"select-css\" name=\"%s\">", HostLogic.EXTRACTION_TYPE);
-            out.println("<option value=\"\" selected>Select a host</option>");
+            out.printf("<select class=\"select-css\" name=\"%s\" required>", HostLogic.EXTRACTION_TYPE);
+            out.println("<option value=\"\" selected>Select an extraction type</option>");
             List<String> list = Arrays.asList("html", "json", "xml");
             for (String s : list) {
                 out.printf("<option value=\"%s\">%s</option>", s, s);

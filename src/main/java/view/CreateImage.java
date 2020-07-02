@@ -59,7 +59,6 @@ public class CreateImage extends HttpServlet {
             out.println("<div style=\"display: inline-block; text-align: center;\">");
             out.println("<h2>Create an Image</h2>");
             out.println("<form method=\"post\">");
-            //out.println("Url:<br>");
             //instead of typing the name of column manualy use the static vraiable in logic
             //use the same name as column id of the table. will use this name to get date
             //from parameter map.
