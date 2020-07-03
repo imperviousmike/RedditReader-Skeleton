@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- *
+ * 
  * @author Shariar (Shawn) Emami
  */
 public class AccountLogic extends GenericLogic<Account, AccountDAL> {

@@ -24,6 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
+ * This class is used to test the normal, edge, and invalid states of the
+ * AccountLogic class.
  *
  * @author Shariar
  */
@@ -67,7 +69,7 @@ class AccountLogicTest {
         //close EntityManager
         em.close();
 
-        logic = LogicFactory.getFor( "Account");
+        logic = LogicFactory.getFor("Account");
     }
 
     @AfterEach
