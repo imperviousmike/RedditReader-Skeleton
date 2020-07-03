@@ -28,6 +28,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
+ * This class is used to test the normal, edge, and invalid states of the
+ * BoardLogic class.
  *
  * @author Earl_Grey_Hot
  */
@@ -86,12 +88,19 @@ public class BoardLogicTest {
         assertEquals(expected.getName(), actual.getName());
     }
 
+    /**
+     * Tests that the correct Board is retrieved with the getWithId() method
+     */
     @Test
     final void testGetWithId() {
         Board returnedBoard = logic.getWithId(expectedBoard.getId());
         assertBoardEquals(expectedBoard, returnedBoard);
     }
 
+    /**
+     * Tests that the getBoardsWithHostID() method can correctly return a List
+     * of Board objects of the correct size.
+     */
     @Test
     final void testGetBoardsWithHostID() {
         List<Board> list = logic.getBoardsWithHostID(expectedBoard.getHostid().getId());
@@ -102,6 +111,10 @@ public class BoardLogicTest {
         assertEquals(originalSize - 1, list.size());
     }
 
+    /**
+     * Tests that the getBoardsWithName() method can correctly return a List of
+     * Board objects of the correct size.
+     */
     @Test
     final void testGetBoardsWithName() {
         List<Board> list = logic.getBoardsWithName(expectedBoard.getName());
@@ -112,12 +125,20 @@ public class BoardLogicTest {
         assertEquals(originalSize - 1, list.size());
     }
 
+    /**
+     * Tests that the correct Board is retrieved with the getBoardWithUrl()
+     * method
+     */
     @Test
     final void testGetBoardWithUrl() {
         Board returnedBoard = logic.getBoardWithUrl(expectedBoard.getUrl());
         assertBoardEquals(expectedBoard, returnedBoard);
     }
 
+    /**
+     * Tests that the createEntity() method correctly instantiates a Board
+     * object under normal conditions.
+     */
     @Test
     final void testCreateEntity() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -130,6 +151,10 @@ public class BoardLogicTest {
         assertBoardEquals(expectedBoard, returnedBoard);
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if a Board object is
+     * instantiated with a null or empty property.
+     */
     @Test
     final void testCreateEntityNullAndEmptyValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -160,6 +185,10 @@ public class BoardLogicTest {
 
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if a Board object is
+     * instantiated with a String value that exceeds the character limit.
+     */
     @Test
     final void testCreateEntityBadLengthValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
