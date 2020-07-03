@@ -30,6 +30,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
+ * This class is used to test the normal, edge, and invalid states of the
+ * ImageLogic class.
  *
  * @author mike
  */
@@ -65,7 +67,7 @@ public class ImageLogicTest {
 
         EntityManager em = EMFactory.getEMF().createEntityManager();
         em.getTransaction().begin();
-        expectedImage = em.merge(image); //fails here, causing every other test to fail
+        expectedImage = em.merge(image);
         em.getTransaction().commit();
         em.close();
 
@@ -97,24 +99,39 @@ public class ImageLogicTest {
         assertEquals(expected.getLocalPath(), actual.getLocalPath());
     }
 
+    /**
+     * Tests that the correct Image is retrieved with the getWithId() method
+     */
     @Test
     final void testGetWithId() {
         Image returnedImage = logic.getWithId(expectedImage.getId());
         assertImageEquals(expectedImage, returnedImage);
     }
 
+    /**
+     * Tests that the correct Image is returned with the getImageWithLocalPath()
+     * method
+     */
     @Test
     final void testGetWithLocalPath() {
         Image returnedImage = logic.getImageWithLocalPath(expectedImage.getLocalPath());
         assertImageEquals(expectedImage, returnedImage);
     }
 
+    /**
+     * Tests that the correct Image is returned with the getImageWithUrl()
+     * method
+     */
     @Test
     final void testGetWithUrl() {
         Image returnedImage = logic.getImageWithUrl(expectedImage.getUrl());
         assertImageEquals(expectedImage, returnedImage);
     }
 
+    /**
+     * Tests that the getImagesWithTitle() method can correctly return a List of
+     * Image objects of the correct size.
+     */
     @Test
     final void testImagesGetWithTitle() {
         List<Image> list = logic.getImagesWithTitle(expectedImage.getTitle());
@@ -126,6 +143,10 @@ public class ImageLogicTest {
         assertEquals(originalSize - 1, list.size());
     }
 
+    /**
+     * Tests that the getImagesWithImageId() method can correctly return a List
+     * of Image objects of the correct size.
+     */
     @Test
     final void testGetImagesWithImageId() {
         List<Image> list = logic.getImagesWithBoardId(expectedImage.getBoard().getId());
@@ -136,6 +157,10 @@ public class ImageLogicTest {
         assertEquals(originalSize - 1, list.size());
     }
 
+    /**
+     * Tests that the getImagesWithDate() method can correctly return a List of
+     * Image objects of the correct size.
+     */
     @Test
     final void testGetImagesWithDate() {
         List<Image> list = logic.getImagesWithDate(expectedImage.getDate());
@@ -147,11 +172,19 @@ public class ImageLogicTest {
         assertEquals(originalSize - 1, list.size());
     }
 
+    /**
+     * Tests that the testCovertDate() method correctly converts the Date
+     * property of an image object to the desired format.
+     */
     @Test
     final void testConvertDate() {
         assertEquals(logic.convertDate(expectedImage.getDate()), logic.convertDate(cal.getTime()));
     }
 
+    /**
+     * Tests that the createEntity() method correctly instantiates an Image
+     * object under normal conditions.
+     */
     @Test
     final void testCreateEntity() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -167,6 +200,10 @@ public class ImageLogicTest {
         assertImageEquals(expectedImage, returnedImage);
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if an Image object
+     * is instantiated with a null or empty property.
+     */
     @Test
     final void testCreateEntityNullAndEmptyValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -219,6 +256,10 @@ public class ImageLogicTest {
 
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if an Image object
+     * is instantiated with a String value that exceeds the character limit.
+     */
     @Test
     final void testCreateEntityBadLengthValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -277,6 +318,7 @@ public class ImageLogicTest {
 
     }
 
+    
     @Test
     final void testCreateEntityEdgeValues() {
         IntFunction<String> generateString = (int length) -> {
@@ -328,7 +370,7 @@ public class ImageLogicTest {
     @Test
     final void testGetColumnCodes() {
         List<String> list = logic.getColumnCodes();
-        assertEquals(Arrays.asList(ImageLogic.ID, ImageLogic.URL, ImageLogic.TITLE, ImageLogic.DATE, ImageLogic.LOCAL_PATH, ImageLogic.BOARD_ID), list); 
+        assertEquals(Arrays.asList(ImageLogic.ID, ImageLogic.URL, ImageLogic.TITLE, ImageLogic.DATE, ImageLogic.LOCAL_PATH, ImageLogic.BOARD_ID), list);
 
     }
 
