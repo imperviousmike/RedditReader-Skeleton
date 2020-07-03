@@ -28,6 +28,8 @@ import common.ValidationException;
 import java.util.Arrays;
 
 /**
+ * This class is used to test the normal, edge, and invalid states of the
+ * HostLogic class.
  *
  * @author mike
  */
@@ -89,24 +91,39 @@ public class HostLogicTest {
         assertEquals(expected.getExtractionType(), actual.getExtractionType());
     }
 
+    /**
+     * Tests that the correct Host is retrieved with the getWithId() method
+     */
     @Test
     final void testGetWithId() {
         Host returnedAccount = logic.getWithId(expectedHost.getId());
         assertHostEquals(expectedHost, returnedAccount);
     }
 
+    /**
+     * Tests that the correct Host is retrieved with the getHostWithName()
+     * method
+     */
     @Test
     final void testGetHostWithName() {
         Host returnedAccount = logic.getHostWithName(expectedHost.getName());
         assertHostEquals(expectedHost, returnedAccount);
     }
 
+    /**
+     * Tests that the correct Host is retrieved with the getHostWithUrl() method
+     */
     @Test
     final void testGetHostWithUrl() {
         Host returnedHost = logic.getHostWithUrl(expectedHost.getUrl());
         assertHostEquals(expectedHost, returnedHost);
     }
 
+    /**
+     * Test to confirm that the getHostWithExtractionType() method properly
+     * returns a List of Host objects which all have the specified
+     * extractionType.
+     */
     @Test
     final void testGetHostWithExtractionType() {
         List<Host> returnedHosts = logic.getHostWithExtractionType(expectedHost.getExtractionType());
@@ -114,6 +131,10 @@ public class HostLogicTest {
 
     }
 
+    /**
+     * Test that verifies a newly instantiated Host object can be added to the
+     * database.
+     */
     @Test
     final void testCreateEntityAndAdd() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -133,6 +154,10 @@ public class HostLogicTest {
         logic.delete(returnedHost);
     }
 
+    /**
+     * Tests that the createEntity() method correctly instantiates a Host object
+     * under normal conditions.
+     */
     @Test
     final void testCreateEntity() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -146,6 +171,10 @@ public class HostLogicTest {
         assertHostEquals(expectedHost, returnedHost);
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if a Host object is
+     * instantiated with a null or empty property.
+     */
     @Test
     final void testCreateEntityNullAndEmptyValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
@@ -182,6 +211,10 @@ public class HostLogicTest {
         assertThrows(ValidationException.class, () -> logic.createEntity(sampleMap));
     }
 
+    /**
+     * Test to confirm that a ValidationException is thrown if a Host object is
+     * instantiated with a String value that exceeds the character limit.
+     */
     @Test
     final void testCreateEntityBadLengthValues() {
         Map<String, String[]> sampleMap = new HashMap<>();
